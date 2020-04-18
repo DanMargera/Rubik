@@ -4,13 +4,13 @@ CXXFLAGS=-c -O2
 all: main.o Rubik.o Constants.o
 	$(CXX) main.o Rubik.o Constants.o -o r
 
-main.o: Rubik.h Constants.h
+main.o: main.cpp Rubik.h Constants.h
 	$(CXX) $(CXXFLAGS) main.cpp
 
-Rubik.o: Rubik.h Constants.h
+Rubik.o: Rubik.cpp Rubik.h Constants.h
 	$(CXX) $(CXXFLAGS) Rubik.cpp
 
-Constants.o: Constants.h
+Constants.o: Constants.cpp Constants.h
 	$(CXX) $(CXXFLAGS) Constants.cpp
 
 clean:
