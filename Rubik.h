@@ -14,22 +14,30 @@ void circularShift(Container& c, const IndexContainer& indexC, RetrieveFunc retr
     auto it = reverse ? indexC.end() : indexC.begin();
     auto endIt = reverse ? indexC.begin() : indexC.end();
     if (reverse) { it--; } else { endIt--; }
-    auto temp(retrieve(c, *it));
+    auto temp(std::move(retrieve(c, *it)));
     for (; it != endIt; reverse ? --it : ++it) {
-        retrieve(c, *it) = retrieve(c, reverse ? *std::prev(it) : *std::next(it));
+        retrieve(c, *it) = std::move(retrieve(c, reverse ? *std::prev(it) : *std::next(it)));
     }
-    retrieve(c, *endIt) = temp;
+    retrieve(c, *endIt) = std::move(temp);
 }
 
 class Cubid
 {
     public:
         Cubid() = default;
+        Cubid(Cubid&& c) : m_faces(std::move(c.getFaces())) { }
+        Cubid& operator=(Cubid&& other) noexcept;
+
+        // Delete copy
+        Cubid(const Cubid& c) = delete;
+        Cubid& operator=(const Cubid& c) = delete;
 
         void setFaceColor(Position facePos, Color c) { m_faces[value(facePos)] = c; }
         Color getColor(Position pos) const { return m_faces.at(value(pos)); }
 
         void rotate(const Axis& axis, bool reverse);
+
+        std::vector<Color>& getFaces() { return m_faces; }
 
     private:
         std::vector<Color> m_faces{6, Color::none};

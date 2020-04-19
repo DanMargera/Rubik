@@ -5,6 +5,13 @@
 
 using namespace RubikConstants;
 
+Cubid& Cubid::operator=(Cubid&& other) noexcept {
+    if (this != &other) {
+        m_faces = std::move(other.getFaces());
+    }
+    return *this;
+}
+
 void
 Cubid::rotate(const Axis& axis, bool reverse)
 {
