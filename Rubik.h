@@ -58,8 +58,6 @@ class RubikCube
 
         bool isSolved();
 
-        bool bruteSolve(int maxDepth);
-
         template <typename TransformCubidFunc, typename... Args>
         void applyTransformToSide(TransformCubidFunc tFunc, Position pos, Args... args) {
             for (Cubid* c : m_sides[value(pos)]) {

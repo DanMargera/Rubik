@@ -1,3 +1,4 @@
+#include "Algorithm.h"
 #include "Rubik.h"
 #include <iostream>
 #include <stdlib.h>
@@ -27,7 +28,7 @@ int main()
         else if (opt == "v") c.turn(/*horizontal*/false, false);
         else if (opt == "-v") c.turn(/*horizontal*/false, true);
         else if (opt == "shuffle") c.shuffle();
-        else if (opt == "brute") c.bruteSolve(6);
+        else if (opt == "brute") Algorithm::bruteSolve(c, 6);
         else if (opt == "s?") {
             std::cout << "Solved? " << c.isSolved() << std::endl;
             continue;

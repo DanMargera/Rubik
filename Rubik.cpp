@@ -99,21 +99,6 @@ RubikCube::shuffle()
 }
 
 bool
-RubikCube::bruteSolve(int maxDepth)
-{
-    if (maxDepth == 0) return false;
-    for (int i=0; i<6; ++i) {
-        rotateSide(static_cast<Position>(i), false);
-        if (isSolved() || bruteSolve(maxDepth-1)) return true;
-        rotateSide(static_cast<Position>(i), true);
-        rotateSide(static_cast<Position>(i), true);
-        if (isSolved() || bruteSolve(maxDepth-1)) return true;
-        rotateSide(static_cast<Position>(i), false);
-    }
-    return false;
-}
-
-bool
 RubikCube::isSolved()
 {
     for (const auto& posColor : s_defaultSideColors) {
