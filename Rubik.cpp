@@ -22,6 +22,26 @@ Cubid::rotate(const Axis& axis, bool reverse)
 }
 
 void
+RubikCube::turn(bool horizontal, bool reverse)
+{
+    std::vector<Cubid*> middleCubids;
+    for (int i=0; i<3; ++i) {
+        for (int j=0; j<3; ++j) {
+            middleCubids.emplace_back(&m_cubids[horizontal ? i : 1][horizontal ? 1 : i][j]);
+        }
+    }
+    // TODO: Avoid this code duplication
+    auto retrieve = [] (std::vector<Cubid*>& vec, int i) -> Cubid& { return *vec[i]; };
+    circularShift(middleCubids, std::array<int, 4>({0,2,8,6}), retrieve, reverse);
+    circularShift(middleCubids, std::array<int, 4>({1,3,7,5}), retrieve, reverse);
+    for (auto* cubid : middleCubids) {
+        cubid->rotate(horizontal ? s_XZ_axis : s_YZ_axis, !reverse);
+    }
+    rotateSide(horizontal ? Position::up : Position::right, !reverse);
+    rotateSide(horizontal ? Position::down : Position::left, reverse);
+}
+
+void
 RubikCube::rotateSide(Position cubeSide, bool reverse)
 {
     auto retrieve = [] (std::vector<Cubid*>& vec, int i) -> Cubid& { return *vec[i]; };

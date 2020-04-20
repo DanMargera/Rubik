@@ -22,6 +22,10 @@ int main()
         else if (opt == "-f") c.rotateSide(Position::front, true);
         else if (opt == "b") c.rotateSide(Position::back, false);
         else if (opt == "-b") c.rotateSide(Position::back, true);
+        else if (opt == "h") c.turn(/*horizontal*/true, false);
+        else if (opt == "-h") c.turn(/*horizontal*/true, true);
+        else if (opt == "v") c.turn(/*horizontal*/false, false);
+        else if (opt == "-v") c.turn(/*horizontal*/false, true);
         else if (opt == "shuffle") c.shuffle();
         else if (opt == "brute") c.bruteSolve(6);
         else if (opt == "s?") {

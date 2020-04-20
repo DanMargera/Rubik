@@ -52,6 +52,8 @@ class RubikCube
 
         void rotateSide(Position cubeSide, bool reverse);
 
+        void turn(bool horizontal, bool reverse);
+
         void shuffle();
 
         bool isSolved();
