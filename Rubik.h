@@ -4,6 +4,7 @@
 #include "Constants.h"
 
 #include <array>
+#include <set>
 #include <vector>
 
 using namespace RubikConstants;
@@ -52,7 +53,7 @@ class RubikCube
 
         void rotateSide(Position cubeSide, bool reverse);
 
-        std::vector<Cubid*> findCubids(std::vector<Color> colors);
+        std::vector<Coordinates> findCubids(std::set<Color> colors, CubidType t = CubidType::any);
 
         void turn(bool horizontal, bool reverse);
 
@@ -66,6 +67,8 @@ class RubikCube
                 tFunc(c, args...);
             }
         }
+
+        std::array<std::array<std::array<Cubid, 3>, 3>, 3>& getCubids() { return m_cubids; }
 
     private:
         void setupFaces();

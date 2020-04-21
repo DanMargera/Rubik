@@ -102,6 +102,21 @@ static std::map<Position, Color> s_defaultSideColors {
     {Position::back, Color::orange}
 };
 
+struct Coordinates
+{
+    Coordinates(int xPos, int yPos, int zPos) : x(xPos) , y(yPos) , z(zPos) { }
+    int x,y,z;
+};
+
+enum class CubidType
+{
+    // These numbers are the number of colors in that cubid type
+    corner=3,
+    edge=2,
+    center=1,
+    any=-1
+};
+
 }
 
 #endif
