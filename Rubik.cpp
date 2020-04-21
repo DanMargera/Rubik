@@ -1,5 +1,6 @@
 #include "Rubik.h"
 
+#include <algorithm>
 #include <iostream>
 #include <stdlib.h>
 
@@ -19,6 +20,26 @@ Cubid::rotate(const Axis& axis, bool reverse)
         return vec[value(p)];
     };
     circularShift(m_faces, axis, retrieve, reverse);
+}
+
+std::vector<Cubid*>
+RubikCube::findCubids(std::vector<Color> colors)
+{
+    std::vector<Cubid*> retVal;
+    for (size_t x=0; x<3; ++x) {
+        for (size_t y=0; y<3; ++y) {
+            for (size_t z=0; z<3; ++z) {
+                auto& faces = m_cubids[x][y][z].getFaces();
+                auto cubidHasColor = [&faces] (Color c) -> bool {
+                    return std::find(faces.begin(), faces.end(), c) != faces.end();
+                };
+                if (std::all_of(colors.begin(), colors.end(), cubidHasColor)) {
+                    retVal.emplace_back(&m_cubids[x][y][z]);
+                }
+            }
+        }
+    }
+    return retVal;
 }
 
 void

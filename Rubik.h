@@ -52,6 +52,8 @@ class RubikCube
 
         void rotateSide(Position cubeSide, bool reverse);
 
+        std::vector<Cubid*> findCubids(std::vector<Color> colors);
+
         void turn(bool horizontal, bool reverse);
 
         void shuffle();
