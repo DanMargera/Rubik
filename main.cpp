@@ -28,6 +28,7 @@ int main()
         else if (opt == "v") c.turn(/*horizontal*/false, false);
         else if (opt == "-v") c.turn(/*horizontal*/false, true);
         else if (opt == "shuffle") c.shuffle();
+        else if (opt == "downcross") Algorithm::downCross(c);
         else if (opt == "reset") c = RubikCube();
         else if (opt == "brute") Algorithm::bruteSolve(c, 6);
         else if (opt == "s?") {

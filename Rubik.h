@@ -61,6 +61,8 @@ class RubikCube
 
         bool isSolved();
 
+        Color getCenterColor(Position side) { return m_sides[value(side)][4]->getColor(side); }
+
         template <typename TransformCubidFunc, typename... Args>
         void applyTransformToSide(TransformCubidFunc tFunc, Position pos, Args... args) {
             for (Cubid* c : m_sides[value(pos)]) {

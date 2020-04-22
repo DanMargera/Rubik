@@ -2,6 +2,7 @@
 
 using RubikConstants::Position;
 using RubikConstants::Color;
+using RubikConstants::Coordinates;
 
 int RubikConstants::value(const Position p)
 {
@@ -11,6 +12,24 @@ int RubikConstants::value(const Position p)
 char RubikConstants::value(const Color c)
 {
     return static_cast<char>(c);
+}
+
+bool RubikConstants::isOnSide(const Coordinates& c, Position side)
+{
+    switch(side) {
+        case Position::front:
+            return c.z == 0;
+        case Position::back:
+            return c.z == 2;
+        case Position::left:
+            return c.x == 0;
+        case Position::right:
+            return c.x == 2;
+        case Position::up:
+            return c.y == 0;
+        case Position::down:
+            return c.y == 2;
+    }
 }
 
 std::string RubikConstants::toString(const Color c)

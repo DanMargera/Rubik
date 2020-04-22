@@ -8,6 +8,8 @@ namespace Algorithm
 
 bool bruteSolve(RubikCube& cube, int maxDepth);
 
+void downCross(RubikCube& cube);
+
 }
 
 #endif

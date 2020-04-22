@@ -108,6 +108,8 @@ struct Coordinates
     int x,y,z;
 };
 
+bool isOnSide(const Coordinates& c, Position side);
+
 enum class CubidType
 {
     // These numbers are the number of colors in that cubid type
