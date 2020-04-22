@@ -1,5 +1,44 @@
 #include "Algorithm.h"
 
+#include <algorithm>
+#include <cassert>
+
+namespace
+{
+std::vector<Position> horizontalSidePositions{Position::front, Position::right, Position::back, Position::left};
+// For now it's used only for horizontal views
+// TODO: Implement views from any angle
+class RelativeCubeView
+{
+    public:
+        RelativeCubeView(Position frontView)
+        {
+            assert(frontView != Position::up && frontView != Position::down);
+            setFrontView(frontView);
+        }
+
+        void setFrontView(Position frontView)
+        {
+            const auto frontViewIt = std::find(horizontalSidePositions.begin(), horizontalSidePositions.end(), frontView);
+            int distance = std::distance(horizontalSidePositions.begin(), frontViewIt);
+            for (int i=0; i<horizontalSidePositions.size(); ++i) {
+                m_relativeMap[horizontalSidePositions[(i+distance)%horizontalSidePositions.size()]] = horizontalSidePositions[i];
+            }
+        }
+
+        Position up() { return m_relativeMap.at(Position::up); }
+        Position down() { return m_relativeMap.at(Position::down); }
+        Position left() { return m_relativeMap.at(Position::left); }
+        Position right() { return m_relativeMap.at(Position::right); }
+        Position front() { return m_relativeMap.at(Position::front); }
+        Position back() { return m_relativeMap.at(Position::back); }
+
+    private:
+        std::map<Position, Position> m_relativeMap;
+
+};
+}
+
 bool Algorithm::bruteSolve(RubikCube& cube, int maxDepth)
 {
     if (maxDepth == 0) return false;
@@ -25,7 +64,7 @@ void Algorithm::downCross(RubikCube& cube)
 {
     Color downColor = cube.getCenterColor(Position::down);
 
-    for (int i=0; i<4; ++i) {
+    for (int i=0; i<horizontalSidePositions.size(); ++i) {
         // Find current location of down-front edge cubid
         auto cubidCoordinates = cube.findCubids({downColor, cube.getCenterColor(Position::front)}, CubidType::edge)[0];
         Position currentSide = isOnSide(cubidCoordinates, Position::left) ? Position::left : Position::right;
