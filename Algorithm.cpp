@@ -11,6 +11,11 @@ std::vector<Position> horizontalSidePositions{Position::front, Position::right, 
 class RelativeCubeView
 {
     public:
+        RelativeCubeView()
+        {
+            setFrontView(Position::front);
+        }
+
         RelativeCubeView(Position frontView)
         {
             assert(frontView != Position::up && frontView != Position::down);
@@ -19,11 +24,14 @@ class RelativeCubeView
 
         void setFrontView(Position frontView)
         {
+            assert(frontView != Position::up && frontView != Position::down);
             const auto frontViewIt = std::find(horizontalSidePositions.begin(), horizontalSidePositions.end(), frontView);
             int distance = std::distance(horizontalSidePositions.begin(), frontViewIt);
             for (int i=0; i<horizontalSidePositions.size(); ++i) {
                 m_relativeMap[horizontalSidePositions[(i+distance)%horizontalSidePositions.size()]] = horizontalSidePositions[i];
             }
+            m_relativeMap[Position::up] = Position::up;
+            m_relativeMap[Position::down] = Position::down;
         }
 
         Position up() { return m_relativeMap.at(Position::up); }
@@ -56,7 +64,6 @@ bool Algorithm::bruteSolve(RubikCube& cube, int maxDepth)
 /*
  * First iteration of an algorithm to assemble a cross at the bottom.
  * Things to improve later:
- * - Use relative positions
  * - Break down in smaller prefab algorithms with meaningful names
  * - Improve legibility, this is unreadable
  */
@@ -64,57 +71,57 @@ void Algorithm::downCross(RubikCube& cube)
 {
     Color downColor = cube.getCenterColor(Position::down);
 
+    RelativeCubeView relative;
+
     for (int i=0; i<horizontalSidePositions.size(); ++i) {
+        relative.setFrontView(horizontalSidePositions[i]);
         // Find current location of down-front edge cubid
-        auto cubidCoordinates = cube.findCubids({downColor, cube.getCenterColor(Position::front)}, CubidType::edge)[0];
-        Position currentSide = isOnSide(cubidCoordinates, Position::left) ? Position::left : Position::right;
-        if (!isOnSide(cubidCoordinates, Position::front)) {
-            if (!isOnSide(cubidCoordinates, Position::up)) {
-                if (!isOnSide(cubidCoordinates, Position::back)) {
+        auto cubidCoordinates = cube.findCubids({downColor, cube.getCenterColor(relative.front())}, CubidType::edge)[0];
+        Position currentSide = isOnSide(cubidCoordinates, relative.left()) ? relative.left() : relative.right();
+        if (!isOnSide(cubidCoordinates, relative.front())) {
+            if (!isOnSide(cubidCoordinates, relative.up())) {
+                if (!isOnSide(cubidCoordinates, relative.back())) {
                     // Bottom-right and bottom-left cases
                     cube.rotateSide(currentSide, false);
                     cube.rotateSide(currentSide, false);
-                    cube.rotateSide(Position::up, currentSide == Position::left);
+                    cube.rotateSide(relative.up(), currentSide == relative.left());
                     cube.rotateSide(currentSide, false);
                     cube.rotateSide(currentSide, false);
                 } else {
                     // Back-left, back-right and back-bottom cases
-                    cube.rotateSide(Position::back, currentSide == Position::left);
-                    if (isOnSide(cubidCoordinates, Position::down)) {
-                        cube.rotateSide(Position::back, currentSide == Position::left);
+                    cube.rotateSide(relative.back(), currentSide == relative.left());
+                    if (isOnSide(cubidCoordinates, relative.down())) {
+                        cube.rotateSide(relative.back(), currentSide == relative.left());
                     }
-                    cube.rotateSide(Position::up, false);
-                    cube.rotateSide(Position::up, false);
-                    cube.rotateSide(Position::back, currentSide != Position::left);
-                    if (isOnSide(cubidCoordinates, Position::down)) {
-                        cube.rotateSide(Position::back, currentSide != Position::left);
+                    cube.rotateSide(relative.up(), false);
+                    cube.rotateSide(relative.up(), false);
+                    cube.rotateSide(relative.back(), currentSide != relative.left());
+                    if (isOnSide(cubidCoordinates, relative.down())) {
+                        cube.rotateSide(relative.back(), currentSide != relative.left());
                     }
                 }
             } else {
                 // Up-left, up-right and up-back cases
-                cube.rotateSide(Position::up, currentSide == Position::left);
-                if (isOnSide(cubidCoordinates, Position::back)) {
-                    cube.rotateSide(Position::up, currentSide == Position::left);
+                cube.rotateSide(relative.up(), currentSide == relative.left());
+                if (isOnSide(cubidCoordinates, relative.back())) {
+                    cube.rotateSide(relative.up(), currentSide == relative.left());
                 }
             }
-        } else if (!isOnSide(cubidCoordinates, Position::up)) {
-            cube.rotateSide(Position::front, currentSide != Position::left);
-            if (isOnSide(cubidCoordinates, Position::down)) {
-                cube.rotateSide(Position::front, currentSide != Position::left);
+        } else if (!isOnSide(cubidCoordinates, relative.up())) {
+            cube.rotateSide(relative.front(), currentSide != relative.left());
+            if (isOnSide(cubidCoordinates, relative.down())) {
+                cube.rotateSide(relative.front(), currentSide != relative.left());
             }
         }
-        // At this point the cubid is at up-front edge [1][0][0]
-        // TODO: get rid of these constant coordinates
-        if (cube.getCubids()[1][0][0].getColor(Position::front) == cube.getCenterColor(Position::front)) {
-            cube.rotateSide(Position::front, false);
-            cube.rotateSide(Position::front, false);
+        // Now the cubid is positioned at the relative upper-front position
+        if (cube.getCubid(edgeCoordinates({relative.front(), relative.up()})).getColor(relative.front()) == cube.getCenterColor(relative.front())) {
+            cube.rotateSide(relative.front(), false);
+            cube.rotateSide(relative.front(), false);
         } else {
-            cube.rotateSide(Position::front, false);
-            cube.rotateSide(Position::down, false);
-            cube.rotateSide(Position::right, true);
-            cube.rotateSide(Position::down, true);
+            cube.rotateSide(relative.front(), false);
+            cube.rotateSide(relative.down(), false);
+            cube.rotateSide(relative.right(), true);
+            cube.rotateSide(relative.down(), true);
         }
-        // TODO: Implement relative positions to avoid turning the cube
-        cube.turn(true, false);
     }
 }

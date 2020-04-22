@@ -70,6 +70,8 @@ class RubikCube
             }
         }
 
+        Cubid& getCubid(Coordinates c) { return m_cubids[c.x][c.y][c.z]; }
+
         std::array<std::array<std::array<Cubid, 3>, 3>, 3>& getCubids() { return m_cubids; }
 
     private:

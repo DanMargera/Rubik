@@ -4,6 +4,7 @@
 #include <array>
 #include <map>
 #include <string>
+#include <tuple>
 
 namespace RubikConstants
 {
@@ -107,6 +108,9 @@ struct Coordinates
     Coordinates(int xPos, int yPos, int zPos) : x(xPos) , y(yPos) , z(zPos) { }
     int x,y,z;
 };
+
+Coordinates edgeCoordinates(std::pair<Position, Position> sides);
+Coordinates cornerCoordinates(std::tuple<Position, Position, Position> sides);
 
 bool isOnSide(const Coordinates& c, Position side);
 
