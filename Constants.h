@@ -19,6 +19,10 @@ enum class Position
     back=5
 };
 
+// Wow. Enums really suck in C++
+// TODO: Use BetterEnums
+int numPositions = 6;
+
 enum class Color
 {
     blue='b',

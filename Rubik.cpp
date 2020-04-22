@@ -126,10 +126,10 @@ RubikCube::shuffle()
 bool
 RubikCube::isSolved()
 {
-    for (const auto& posColor : s_defaultSideColors) {
-        const auto& pos = posColor.first;
-        for (const auto* cubid : m_sides[value(pos)]) {
-            if (cubid->getColor(pos) != posColor.second) return false;
+    for (int p=0; p<numPositions; ++p) {
+        Position pos = static_cast<Position>(p);
+        for (const auto* cubid : m_sides[p]) {
+            if (cubid->getColor(pos) != getCenterColor(pos)) return false;
         }
     }
     return true;
