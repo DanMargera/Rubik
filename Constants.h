@@ -21,7 +21,7 @@ enum class Position
 
 // Wow. Enums really suck in C++
 // TODO: Use BetterEnums
-int numPositions = 6;
+static int numPositions = 6;
 
 enum class Color
 {
