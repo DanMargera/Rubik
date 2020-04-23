@@ -55,16 +55,18 @@ namespace operations
     static const int R=0, L=1, F=2, B=3, U=4, D=5;
     // Counter clockwise
     static const int _R=6, _L=7, _F=8, _B=9, _U=10, _D=11;
+    // Half-turns
+    static const int R2=12, L2=13, F2=14, B2=15, U2=16, D2=17;
 };
 
 Position pos(int op)
 {
     using namespace operations;
-    return (op == R || op == _R) ? Position::right
-         : (op == L || op == _L) ? Position::left
-         : (op == F || op == _F) ? Position::front
-         : (op == B || op == _B) ? Position::back
-         : (op == U || op == _U) ? Position::up
+    return (op%6 == R) ? Position::right
+         : (op%6 == L) ? Position::left
+         : (op%6 == F) ? Position::front
+         : (op%6 == B) ? Position::back
+         : (op%6 == U) ? Position::up
          : Position::down;
 }
 
@@ -73,10 +75,18 @@ bool clockwise(int op)
     return op < 6;
 }
 
+bool isHalfTurn(int op)
+{
+    return op > 11;
+}
+
 void moveSequence(RubikCube& cube, RelativeCubeView& relative, std::vector<int> ops)
 {
     static const auto exec = [] (RubikCube& c, RelativeCubeView& r, int op) {
         c.rotateSide(r(pos(op)), !clockwise(op));
+        if (isHalfTurn(op)) {
+            c.rotateSide(r(pos(op)), !clockwise(op));
+        }
     };
     for (auto op : ops) {
         exec(cube, relative, op);
