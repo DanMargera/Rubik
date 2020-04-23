@@ -12,6 +12,10 @@ void downCross(RubikCube& cube);
 
 void downCorners(RubikCube& cube);
 
+void middleLayer(RubikCube& cube);
+
+void layerSolve(RubikCube& cube);
+
 }
 
 #endif

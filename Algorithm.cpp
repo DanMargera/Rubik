@@ -184,3 +184,86 @@ void Algorithm::downCorners(RubikCube& cube)
         }
     }
 }
+
+static void ururufuf(RubikCube& cube, RelativeCubeView& relative)
+{
+    // U R -U -R -U -F U F
+    cube.rotateSide(relative.up(), false);
+    cube.rotateSide(relative.right(), false);
+    cube.rotateSide(relative.up(), true);
+    cube.rotateSide(relative.right(), true);
+    cube.rotateSide(relative.up(), true);
+    cube.rotateSide(relative.front(), true);
+    cube.rotateSide(relative.up(), false);
+    cube.rotateSide(relative.front(), false);
+}
+
+void Algorithm::middleLayer(RubikCube& cube)
+{
+    RelativeCubeView relative;
+
+    for (auto side : horizontalSidePositions) {
+        relative.setFrontView(side);
+        // Locate left-front edge cubid
+        auto cubidCoordinates = cube.findCubids({cube.getCenterColor(relative.left()),
+                                                 cube.getCenterColor(relative.front())},
+                                                 CubidType::edge)[0];
+        auto matchingSide = Position::up; // Assigning any value
+        if (!isOnSide(cubidCoordinates, relative.up())) {
+            // Cubid is in the correct position, check the orientation
+            if (cubidCoordinates == edgeCoordinates({relative.left(), relative.front()}) &&
+                    cube.getCubid(cubidCoordinates).getColor(relative.left()) == cube.getCenterColor(relative.left())) {
+                continue;
+            }
+            // Cubid is trapped, need to bring it to the up side
+            auto currentSide = isOnSide(cubidCoordinates, relative.front()) && !isOnSide(cubidCoordinates, relative.left()) ? relative.front()
+                             : isOnSide(cubidCoordinates, relative.right()) ? relative.right()
+                             : isOnSide(cubidCoordinates, relative.back()) ? relative.back()
+                             : relative.left();
+            relative.setFrontView(currentSide);
+            ururufuf(cube, relative);
+            // Ururufuf will untrap the cubid, and leave it at up-back edge
+            auto& cubid = cube.getCubid(edgeCoordinates({relative.up(), relative.back()}));
+            relative.setFrontView(side);
+            matchingSide = cubid.getColor(relative.up()) == cube.getCenterColor(relative.front()) ?
+                           relative.left() : relative.front();
+        } else {
+            matchingSide = cube.getCubid(cubidCoordinates).getColor(relative.up()) == cube.getCenterColor(relative.front()) ?
+                           relative.left() : relative.front();
+        }
+
+        // Cubid is now somewhere on up side, need to align it with matchingSide
+        auto& targetCubid = cube.getCubid(edgeCoordinates({matchingSide, relative.up()}));
+        auto otherSide = matchingSide == relative.left() ? relative.front() : relative.left();
+        // Rotate until the cubid is on the matching side
+        while (targetCubid.getColor(matchingSide) != cube.getCenterColor(matchingSide) ||
+               targetCubid.getColor(relative.up()) != cube.getCenterColor(otherSide)) {
+            cube.rotateSide(relative.up(), false);
+        }
+        relative.setFrontView(matchingSide);
+
+        // Cubid is now up-front on relative view
+        auto& cubid = cube.getCubid(edgeCoordinates({relative.up(), relative.front()}));
+        if (cubid.getColor(relative.up()) == cube.getCenterColor(relative.right())) {
+            // U -R -U -R -U -F U F
+            ururufuf(cube, relative);
+        } else {
+            // -U -L U L U F -U -F
+            cube.rotateSide(relative.up(), true);
+            cube.rotateSide(relative.left(), true);
+            cube.rotateSide(relative.up(), false);
+            cube.rotateSide(relative.left(), false);
+            cube.rotateSide(relative.up(), false);
+            cube.rotateSide(relative.front(), false);
+            cube.rotateSide(relative.up(), true);
+            cube.rotateSide(relative.front(), true);
+        }
+    }
+}
+
+void Algorithm::layerSolve(RubikCube& cube)
+{
+    downCross(cube);
+    downCorners(cube);
+    middleLayer(cube);
+}
