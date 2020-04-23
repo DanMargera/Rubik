@@ -28,7 +28,7 @@ class RelativeCubeView
             const auto frontViewIt = std::find(horizontalSidePositions.begin(), horizontalSidePositions.end(), frontView);
             int distance = std::distance(horizontalSidePositions.begin(), frontViewIt);
             for (int i=0; i<horizontalSidePositions.size(); ++i) {
-                m_relativeMap[horizontalSidePositions[(i+distance)%horizontalSidePositions.size()]] = horizontalSidePositions[i];
+                m_relativeMap[horizontalSidePositions[i]] = horizontalSidePositions[(i+distance)%horizontalSidePositions.size()];
             }
             m_relativeMap[Position::up] = Position::up;
             m_relativeMap[Position::down] = Position::down;
