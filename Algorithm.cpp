@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <cstdlib>
 
 namespace
 {
@@ -52,32 +53,33 @@ class RelativeCubeView
 namespace operations
 {
     // Clockwise rotations
-    static const int R=0, L=1, F=2, B=3, U=4, D=5;
+    static const int R=1, L=2, F=3, B=4, U=5, D=6;
     // Counter clockwise
-    static const int _R=6, _L=7, _F=8, _B=9, _U=10, _D=11;
+    static const int _R=-1, _L=-2, _F=-3, _B=-4, _U=-5, _D=-6;
     // Half-turns
-    static const int R2=12, L2=13, F2=14, B2=15, U2=16, D2=17;
+    static const int R2=11, L2=12, F2=13, B2=14, U2=15, D2=16;
 };
 
 Position pos(int op)
 {
     using namespace operations;
-    return (op%6 == R) ? Position::right
-         : (op%6 == L) ? Position::left
-         : (op%6 == F) ? Position::front
-         : (op%6 == B) ? Position::back
-         : (op%6 == U) ? Position::up
+    using std::abs;
+    return (abs(op)%10 == R) ? Position::right
+         : (abs(op)%10 == L) ? Position::left
+         : (abs(op)%10 == F) ? Position::front
+         : (abs(op)%10 == B) ? Position::back
+         : (abs(op)%10 == U) ? Position::up
          : Position::down;
 }
 
 bool clockwise(int op)
 {
-    return op < 6;
+    return op > 0;
 }
 
 bool isHalfTurn(int op)
 {
-    return op > 11;
+    return op > 10;
 }
 
 void moveSequence(RubikCube& cube, RelativeCubeView& relative, std::vector<int> ops)
@@ -165,7 +167,7 @@ void Algorithm::downCross(RubikCube& cube)
         if (cube.getCubid(edgeCoordinates({relative.front(), relative.up()})).getColor(relative.front()) == cube.getCenterColor(relative.front())) {
             moveSequence(cube, relative, {F2}); // TODO: Call F2 directly when half-turn is implemented
         } else {
-            moveSequence(cube, relative, {F, D, _R, _D});
+            moveSequence(cube, relative, {F, D, -R, -D});
         }
     }
 }
@@ -188,7 +190,7 @@ void Algorithm::downCorners(RubikCube& cube)
                 if (cube.getCubid(cubidCoordinates).getColor(relative.down()) == cube.getCenterColor(relative.down())) {
                     continue;
                 }
-                moveSequence(cube, relative, {F, U, _F, _U});
+                moveSequence(cube, relative, {F, U, -F, -U});
             } else {
                 Position currentSide = isOnSide(cubidCoordinates, relative.front()) ? relative.front()
                                      : isOnSide(cubidCoordinates, relative.right()) ? relative.right()
@@ -211,7 +213,7 @@ void Algorithm::downCorners(RubikCube& cube)
         // Now the cubid is positioned above it's correct position, at up-front-left corner
         auto& cubid = cube.getCubid(cornerCoordinates({relative.up(), relative.front(), relative.left()}));
         if (cubid.getColor(relative.up()) == cube.getCenterColor(relative.down())) {
-            moveSequence(cube, relative, {F, R, U2, _R, _F});
+            moveSequence(cube, relative, {F, R, U2, -R, -F});
         } else {
             auto currentSide = cubid.getColor(relative.front()) == cube.getCenterColor(relative.down()) ? relative.front()
                                                                                                         : relative.left();
@@ -246,7 +248,7 @@ void Algorithm::middleLayer(RubikCube& cube)
                              : isOnSide(cubidCoordinates, relative.back()) ? relative.back()
                              : relative.left();
             relative.setFrontView(currentSide);
-            moveSequence(cube, relative, {U, R, _U, _R, _U, _F, U, F});
+            moveSequence(cube, relative, {U, R, -U, -R, -U, -F, U, F});
             // Ururufuf will untrap the cubid, and leave it at up-back edge
             auto& cubid = cube.getCubid(edgeCoordinates({relative.up(), relative.back()}));
             relative.setFrontView(side);
@@ -270,9 +272,9 @@ void Algorithm::middleLayer(RubikCube& cube)
         // Cubid is now up-front on relative view
         auto& cubid = cube.getCubid(edgeCoordinates({relative.up(), relative.front()}));
         if (cubid.getColor(relative.up()) == cube.getCenterColor(relative.right())) {
-            moveSequence(cube, relative, {U, R, _U, _R, _U, _F, U, F});
+            moveSequence(cube, relative, {U, R, -U, -R, -U, -F, U, F});
         } else {
-            moveSequence(cube, relative, {_U, _L, U, L, U, F, _U, _F});
+            moveSequence(cube, relative, {-U, -L, U, L, U, F, -U, -F});
         }
     }
 }
