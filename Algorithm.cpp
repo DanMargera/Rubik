@@ -116,6 +116,7 @@ bool Algorithm::bruteSolve(RubikCube& cube, int maxDepth)
  */
 void Algorithm::downCross(RubikCube& cube)
 {
+    using namespace operations;
     Color downColor = cube.getCenterColor(Position::down);
 
     RelativeCubeView relative;
@@ -162,19 +163,16 @@ void Algorithm::downCross(RubikCube& cube)
         }
         // Now the cubid is positioned at the relative upper-front position
         if (cube.getCubid(edgeCoordinates({relative.front(), relative.up()})).getColor(relative.front()) == cube.getCenterColor(relative.front())) {
-            cube.rotateSide(relative.front(), false);
-            cube.rotateSide(relative.front(), false);
+            moveSequence(cube, relative, {F2}); // TODO: Call F2 directly when half-turn is implemented
         } else {
-            cube.rotateSide(relative.front(), false);
-            cube.rotateSide(relative.down(), false);
-            cube.rotateSide(relative.right(), true);
-            cube.rotateSide(relative.down(), true);
+            moveSequence(cube, relative, {F, D, _R, _D});
         }
     }
 }
 
 void Algorithm::downCorners(RubikCube& cube)
 {
+    using namespace operations;
     RelativeCubeView relative;
 
     for (auto side : horizontalSidePositions) {
@@ -190,10 +188,7 @@ void Algorithm::downCorners(RubikCube& cube)
                 if (cube.getCubid(cubidCoordinates).getColor(relative.down()) == cube.getCenterColor(relative.down())) {
                     continue;
                 }
-                cube.rotateSide(relative.front(), false);
-                cube.rotateSide(relative.up(), false);
-                cube.rotateSide(relative.front(), true);
-                cube.rotateSide(relative.up(), true);
+                moveSequence(cube, relative, {F, U, _F, _U});
             } else {
                 Position currentSide = isOnSide(cubidCoordinates, relative.front()) ? relative.front()
                                      : isOnSide(cubidCoordinates, relative.right()) ? relative.right()
@@ -216,12 +211,7 @@ void Algorithm::downCorners(RubikCube& cube)
         // Now the cubid is positioned above it's correct position, at up-front-left corner
         auto& cubid = cube.getCubid(cornerCoordinates({relative.up(), relative.front(), relative.left()}));
         if (cubid.getColor(relative.up()) == cube.getCenterColor(relative.down())) {
-            cube.rotateSide(relative.front(), false);
-            cube.rotateSide(relative.right(), false);
-            cube.rotateSide(relative.up(), false);
-            cube.rotateSide(relative.up(), false);
-            cube.rotateSide(relative.right(), true);
-            cube.rotateSide(relative.front(), true);
+            moveSequence(cube, relative, {F, R, U2, _R, _F});
         } else {
             auto currentSide = cubid.getColor(relative.front()) == cube.getCenterColor(relative.down()) ? relative.front()
                                                                                                         : relative.left();
@@ -232,21 +222,9 @@ void Algorithm::downCorners(RubikCube& cube)
     }
 }
 
-static void ururufuf(RubikCube& cube, RelativeCubeView& relative)
-{
-    // U R -U -R -U -F U F
-    cube.rotateSide(relative.up(), false);
-    cube.rotateSide(relative.right(), false);
-    cube.rotateSide(relative.up(), true);
-    cube.rotateSide(relative.right(), true);
-    cube.rotateSide(relative.up(), true);
-    cube.rotateSide(relative.front(), true);
-    cube.rotateSide(relative.up(), false);
-    cube.rotateSide(relative.front(), false);
-}
-
 void Algorithm::middleLayer(RubikCube& cube)
 {
+    using namespace operations;
     RelativeCubeView relative;
 
     for (auto side : horizontalSidePositions) {
@@ -268,7 +246,7 @@ void Algorithm::middleLayer(RubikCube& cube)
                              : isOnSide(cubidCoordinates, relative.back()) ? relative.back()
                              : relative.left();
             relative.setFrontView(currentSide);
-            ururufuf(cube, relative);
+            moveSequence(cube, relative, {U, R, _U, _R, _U, _F, U, F});
             // Ururufuf will untrap the cubid, and leave it at up-back edge
             auto& cubid = cube.getCubid(edgeCoordinates({relative.up(), relative.back()}));
             relative.setFrontView(side);
@@ -292,18 +270,9 @@ void Algorithm::middleLayer(RubikCube& cube)
         // Cubid is now up-front on relative view
         auto& cubid = cube.getCubid(edgeCoordinates({relative.up(), relative.front()}));
         if (cubid.getColor(relative.up()) == cube.getCenterColor(relative.right())) {
-            // U R -U -R -U -F U F
-            ururufuf(cube, relative);
+            moveSequence(cube, relative, {U, R, _U, _R, _U, _F, U, F});
         } else {
-            // -U -L U L U F -U -F
-            cube.rotateSide(relative.up(), true);
-            cube.rotateSide(relative.left(), true);
-            cube.rotateSide(relative.up(), false);
-            cube.rotateSide(relative.left(), false);
-            cube.rotateSide(relative.up(), false);
-            cube.rotateSide(relative.front(), false);
-            cube.rotateSide(relative.up(), true);
-            cube.rotateSide(relative.front(), true);
+            moveSequence(cube, relative, {_U, _L, U, L, U, F, _U, _F});
         }
     }
 }
