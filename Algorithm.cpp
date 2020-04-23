@@ -34,6 +34,8 @@ class RelativeCubeView
             m_relativeMap[Position::down] = Position::down;
         }
 
+        Position operator()(Position pos) const noexcept { return m_relativeMap.at(pos); }
+
         Position up() { return m_relativeMap.at(Position::up); }
         Position down() { return m_relativeMap.at(Position::down); }
         Position left() { return m_relativeMap.at(Position::left); }
@@ -45,7 +47,42 @@ class RelativeCubeView
         std::map<Position, Position> m_relativeMap;
 
 };
+
+// TODO: move operations and sequence to constants/rubik
+namespace operations
+{
+    // Clockwise rotations
+    static const int R=0, L=1, F=2, B=3, U=4, D=5;
+    // Counter clockwise
+    static const int _R=6, _L=7, _F=8, _B=9, _U=10, _D=11;
+};
+
+Position pos(int op)
+{
+    using namespace operations;
+    return (op == R || op == _R) ? Position::right
+         : (op == L || op == _L) ? Position::left
+         : (op == F || op == _F) ? Position::front
+         : (op == B || op == _B) ? Position::back
+         : (op == U || op == _U) ? Position::up
+         : Position::down;
 }
+
+bool clockwise(int op)
+{
+    return op < 6;
+}
+
+void moveSequence(RubikCube& cube, RelativeCubeView& relative, std::vector<int> ops)
+{
+    static const auto exec = [] (RubikCube& c, RelativeCubeView& r, int op) {
+        c.rotateSide(r(pos(op)), !clockwise(op));
+    };
+    for (auto op : ops) {
+        exec(cube, relative, op);
+    }
+}
+} // namespace
 
 bool Algorithm::bruteSolve(RubikCube& cube, int maxDepth)
 {
@@ -245,7 +282,7 @@ void Algorithm::middleLayer(RubikCube& cube)
         // Cubid is now up-front on relative view
         auto& cubid = cube.getCubid(edgeCoordinates({relative.up(), relative.front()}));
         if (cubid.getColor(relative.up()) == cube.getCenterColor(relative.right())) {
-            // U -R -U -R -U -F U F
+            // U R -U -R -U -F U F
             ururufuf(cube, relative);
         } else {
             // -U -L U L U F -U -F
