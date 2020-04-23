@@ -10,6 +10,8 @@ bool bruteSolve(RubikCube& cube, int maxDepth);
 
 void downCross(RubikCube& cube);
 
+void downCorners(RubikCube& cube);
+
 }
 
 #endif

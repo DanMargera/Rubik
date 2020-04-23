@@ -97,3 +97,13 @@ std::string RubikConstants::toString(const Color c)
     }
     return retVal + value(c) + "\e[0m";
 }
+
+bool Coordinates::operator==(const Coordinates& other) const noexcept
+{
+    return x == other.x && y == other.y && z == other.z;
+}
+
+bool Coordinates::operator!=(const Coordinates& other) const noexcept
+{
+    return x != other.x || y != other.y || z != other.z;
+}

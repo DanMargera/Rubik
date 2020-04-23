@@ -73,8 +73,8 @@ void Algorithm::downCross(RubikCube& cube)
 
     RelativeCubeView relative;
 
-    for (int i=0; i<horizontalSidePositions.size(); ++i) {
-        relative.setFrontView(horizontalSidePositions[i]);
+    for (auto side : horizontalSidePositions) {
+        relative.setFrontView(side);
         // Find current location of down-front edge cubid
         auto cubidCoordinates = cube.findCubids({downColor, cube.getCenterColor(relative.front())}, CubidType::edge)[0];
         Position currentSide = isOnSide(cubidCoordinates, relative.left()) ? relative.left() : relative.right();
@@ -122,6 +122,65 @@ void Algorithm::downCross(RubikCube& cube)
             cube.rotateSide(relative.down(), false);
             cube.rotateSide(relative.right(), true);
             cube.rotateSide(relative.down(), true);
+        }
+    }
+}
+
+void Algorithm::downCorners(RubikCube& cube)
+{
+    RelativeCubeView relative;
+
+    for (auto side : horizontalSidePositions) {
+        relative.setFrontView(side);
+        // Locate down-left-front corner
+        auto cubidCoordinates = cube.findCubids({cube.getCenterColor(relative.down()),
+                                                 cube.getCenterColor(relative.front()),
+                                                 cube.getCenterColor(relative.left())},
+                                                 CubidType::corner)[0];
+        if (!isOnSide(cubidCoordinates, relative.up())) {
+            if (cubidCoordinates == cornerCoordinates({relative.down(), relative.front(), relative.left()})) {
+                // Cubid is in the correct position, check the orientation
+                if (cube.getCubid(cubidCoordinates).getColor(relative.down()) == cube.getCenterColor(relative.down())) {
+                    continue;
+                }
+                cube.rotateSide(relative.front(), false);
+                cube.rotateSide(relative.up(), false);
+                cube.rotateSide(relative.front(), true);
+                cube.rotateSide(relative.up(), true);
+            } else {
+                Position currentSide = isOnSide(cubidCoordinates, relative.front()) ? relative.front()
+                                     : isOnSide(cubidCoordinates, relative.right()) ? relative.right()
+                                     : relative.back();
+                cube.rotateSide(currentSide, true); // Bring cubid to up face
+                cube.rotateSide(relative.up(), false);
+                cube.rotateSide(relative.up(), false);
+                cube.rotateSide(currentSide, false); // Undo
+                if (cubidCoordinates != cornerCoordinates({relative.down(), relative.back(), relative.right()})) {
+                    cube.rotateSide(relative.up(), isOnSide(cubidCoordinates, relative.right()));
+                }
+            }
+        } else if (cubidCoordinates != cornerCoordinates({relative.up(), relative.front(), relative.left()})) {
+            cube.rotateSide(relative.up(), isOnSide(cubidCoordinates, relative.left()));
+            if (cubidCoordinates == cornerCoordinates({relative.up(), relative.back(), relative.right()})) {
+                // It was on the opposite corner, so rotate once more
+                cube.rotateSide(relative.up(), isOnSide(cubidCoordinates, relative.left()));
+            }
+        }
+        // Now the cubid is positioned above it's correct position, at up-front-left corner
+        auto& cubid = cube.getCubid(cornerCoordinates({relative.up(), relative.front(), relative.left()}));
+        if (cubid.getColor(relative.up()) == cube.getCenterColor(relative.down())) {
+            cube.rotateSide(relative.front(), false);
+            cube.rotateSide(relative.right(), false);
+            cube.rotateSide(relative.up(), false);
+            cube.rotateSide(relative.up(), false);
+            cube.rotateSide(relative.right(), true);
+            cube.rotateSide(relative.front(), true);
+        } else {
+            auto currentSide = cubid.getColor(relative.front()) == cube.getCenterColor(relative.down()) ? relative.front()
+                                                                                                        : relative.left();
+            cube.rotateSide(currentSide, currentSide == relative.left());
+            cube.rotateSide(relative.up(), currentSide == relative.left());
+            cube.rotateSide(currentSide, currentSide != relative.left());
         }
     }
 }

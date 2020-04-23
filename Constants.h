@@ -110,6 +110,8 @@ static std::map<Position, Color> s_defaultSideColors {
 struct Coordinates
 {
     Coordinates(int xPos, int yPos, int zPos) : x(xPos) , y(yPos) , z(zPos) { }
+    bool operator==(const Coordinates& other) const noexcept;
+    bool operator!=(const Coordinates& other) const noexcept;
     int x,y,z;
 };
 
