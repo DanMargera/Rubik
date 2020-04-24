@@ -285,9 +285,58 @@ void Algorithm::middleLayer(RubikCube& cube)
     }
 }
 
+void Algorithm::topCross(RubikCube& cube)
+{
+    using namespace operations;
+    RelativeCubeView relative;
+
+    auto& cubidL = cube.getCubid(edgeCoordinates({relative.up(), relative.left()}));
+    auto& cubidR = cube.getCubid(edgeCoordinates({relative.up(), relative.right()}));
+    auto& cubidF = cube.getCubid(edgeCoordinates({relative.up(), relative.front()}));
+    auto& cubidB = cube.getCubid(edgeCoordinates({relative.up(), relative.back()}));
+
+    auto upColor = cube.getCenterColor(relative.up());
+
+    bool left = cubidL.getColor(relative.up()) == upColor;
+    bool right = cubidR.getColor(relative.up()) == upColor;
+    bool front = cubidF.getColor(relative.up()) == upColor;
+    bool back = cubidB.getColor(relative.up()) == upColor;
+
+    if (left && right && front && back) {
+        return;
+    }
+
+    if (!left && !front && !right) {
+        // Dot shape, execute once to form "L"
+        moveSequence(cube, relative, {F, R, U, -R, -U, -F});
+    }
+
+    left = cubidL.getColor(relative.up()) == upColor;
+    right = cubidR.getColor(relative.up()) == upColor;
+    front = cubidF.getColor(relative.up()) == upColor;
+    back = cubidB.getColor(relative.up()) == upColor;
+
+    if ((left && right) || (front && back)) {
+        // Cubids form a line on top, execute once
+        relative.setFrontView(!front ? relative.front() : relative.right());
+        moveSequence(cube, relative, {F, R, U, -R, -U, -F});
+    } else if (left || front || right) {
+        // Cubids form an "L" shape, execute twice
+        auto relativeSide = left ? (front ? relative.right() : relative.front())
+                          : front ? relative.back()
+                          : relative.left();
+        relative.setFrontView(relativeSide);
+        moveSequence(cube, relative, {F, R, U, -R, -U, -F});
+        moveSequence(cube, relative, {F, R, U, -R, -U, -F});
+    } else {
+        assert(0);
+    }
+}
+
 void Algorithm::layerSolve(RubikCube& cube)
 {
     downCross(cube);
     downCorners(cube);
     middleLayer(cube);
+    topCross(cube);
 }
