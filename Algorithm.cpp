@@ -237,6 +237,10 @@ void Algorithm::middleLayer(RubikCube& cube)
         auto cubidCoordinates = cube.findCubids({cube.getCenterColor(relative.left()),
                                                  cube.getCenterColor(relative.front())},
                                                  CubidType::edge)[0];
+        if (isOnSide(cubidCoordinates, relative.down())) {
+            // Error, should not solve middle layer before bottom layer
+            return;
+        }
         auto matchingSide = Position::up; // Assigning any value
         if (!isOnSide(cubidCoordinates, relative.up())) {
             // Cubid is in the correct position, check the orientation
