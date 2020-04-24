@@ -6,7 +6,7 @@
 namespace Algorithm
 {
 
-bool bruteSolve(RubikCube& cube, int maxDepth);
+bool bruteSolve(RubikCube& cube, int maxDepth, int lastPos=-1);
 
 void downCross(RubikCube& cube);
 

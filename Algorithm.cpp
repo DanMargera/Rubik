@@ -96,15 +96,17 @@ void moveSequence(RubikCube& cube, RelativeCubeView& relative, std::vector<int> 
 }
 } // namespace
 
-bool Algorithm::bruteSolve(RubikCube& cube, int maxDepth)
+bool Algorithm::bruteSolve(RubikCube& cube, int maxDepth, int lastPos)
 {
     if (maxDepth == 0) return false;
     for (int i=0; i<6; ++i) {
+        if (i == lastPos) continue;
         cube.rotateSide(static_cast<Position>(i), false);
-        if (cube.isSolved() || bruteSolve(cube, maxDepth-1)) return true;
-        cube.rotateSide(static_cast<Position>(i), true);
-        cube.rotateSide(static_cast<Position>(i), true);
-        if (cube.isSolved() || bruteSolve(cube, maxDepth-1)) return true;
+        if (cube.isSolved() || bruteSolve(cube, maxDepth-1, i)) return true;
+        cube.rotateSide(static_cast<Position>(i), false);
+        if (cube.isSolved() || bruteSolve(cube, maxDepth-1, i)) return true;
+        cube.rotateSide(static_cast<Position>(i), false);
+        if (cube.isSolved() || bruteSolve(cube, maxDepth-1, i)) return true;
         cube.rotateSide(static_cast<Position>(i), false);
     }
     return false;
