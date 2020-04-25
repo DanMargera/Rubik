@@ -333,10 +333,55 @@ void Algorithm::topCross(RubikCube& cube)
     }
 }
 
+void Algorithm::topFace(RubikCube& cube)
+{
+    using namespace operations;
+    RelativeCubeView relative;
+
+    std::array<Cubid*, 4> corners{
+        &cube.getCubid(cornerCoordinates({relative.up(), relative.left(), relative.front()})),
+        &cube.getCubid(cornerCoordinates({relative.up(), relative.left(), relative.back()})),
+        &cube.getCubid(cornerCoordinates({relative.up(), relative.right(), relative.front()})),
+        &cube.getCubid(cornerCoordinates({relative.up(), relative.right(), relative.back()}))
+    };
+
+    auto upColor = cube.getCenterColor(relative.up());
+
+    auto count = [&relative,&corners,upColor] () {
+        int c = 0;
+        for (auto* cubid : corners) {
+            if (cubid->getColor(relative.up()) == upColor) c++;
+        }
+        return c;
+    };
+
+    int solved = count();
+
+    auto& cubidLF = *corners[0];
+    while (solved != 4) { //!all colors in top
+        if (solved == 0) {
+            while (cubidLF.getColor(relative.left()) != upColor) {
+                cube.rotateSide(relative.up(), false);
+            }
+        } else if (solved == 1) {
+            while (cubidLF.getColor(relative.up()) != upColor) {
+                cube.rotateSide(relative.up(), false);
+            }
+        } else {
+            while (cubidLF.getColor(relative.front()) != upColor) {
+                cube.rotateSide(relative.up(), false);
+            }
+        }
+        moveSequence(cube, relative, {R, U, -R, U, R, U2, -R});
+        solved = count();
+    }
+}
+
 void Algorithm::layerSolve(RubikCube& cube)
 {
     downCross(cube);
     downCorners(cube);
     middleLayer(cube);
     topCross(cube);
+    topFace(cube);
 }
