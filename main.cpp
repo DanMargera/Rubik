@@ -1,16 +1,44 @@
 #include "Algorithm.h"
 #include "Rubik.h"
+#include <algorithm>
 #include <iostream>
 #include <stdlib.h>
 #include <time.h>
+
+static void help()
+{
+    std::string optColor = "\e[38;5;246m\e[1m";
+    std::cout << "\e[1m- \e[38;5;208mASCII \e[38;5;196mR\e[38;5;165mu\e[38;5;27mb\e[38;5;118mi\e[38;5;226mk\e[0m \e[1mCommands -\n"
+              << optColor << "  shuffle     \e[0m" << " Shuffles cube. Applies 15~25 random rotations.\n"
+              << optColor << "  layersolve  \e[0m" << " Applies an inneficient layer solving algorithm. 150+ moves.\n"
+              << optColor << "  brute       \e[0m" << " Explores all possible combinations of 6 moves from the current state.\n"
+              << optColor << "  reset       \e[0m" << " Resets the initial state of the cube.\n"
+              << optColor << "  help        \e[0m" << " Prints this help text.\n"
+              << optColor << "  q           \e[0m" << " Quit.\n\n"
+
+              << "- Apply rotations using face initials:  [R]ight [L]eft [U]p\n"
+              << "                                        [F]ront [B]ack [D]own\n"
+              << optColor << "  R \e[0m\t"    << " Rotates right face clockwise.\n"
+              << optColor << "  -R \e[0m\t"    << " Rotates right face counter-clockwise.\n\n"
+              << "- Change angle of view with: [V]ertical [H]orizontal\n"
+              << std::endl;
+}
+
+static void toLower(std::string& s)
+{
+    std::transform(s.begin(), s.end(), s.begin(),
+            [](unsigned char c){ return std::tolower(c); });
+}
 
 int main()
 {
     RubikCube c;
     c.print();
+    help();
     std::string opt;
     while (opt != "q") {
         std::cin >> opt;
+        toLower(opt);
         if (opt == "r") c.rotateSide(Position::right, false);
         else if (opt == "-r") c.rotateSide(Position::right, true);
         else if (opt == "l") c.rotateSide(Position::left, false);
@@ -41,6 +69,9 @@ int main()
         else if (opt == "brute") Algorithm::bruteSolve(c, 6);
         else if (opt == "s?") {
             std::cout << "Solved? " << c.isSolved() << std::endl;
+            continue;
+        } else if (opt != "q") {
+            help();
             continue;
         }
         c.print();
