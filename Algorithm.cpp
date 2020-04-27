@@ -160,10 +160,13 @@ void Algorithm::downCross(RubikCube& cube)
                 }
             }
         } else if (!isOnSide(cubidCoordinates, relative.up())) {
-            cube.rotateSide(relative.front(), currentSide != relative.left());
             if (isOnSide(cubidCoordinates, relative.down())) {
+                if (cube.getCubid(cubidCoordinates).getColor(relative.front()) == cube.getCenterColor(relative.front())) {
+                    continue;
+                }
                 cube.rotateSide(relative.front(), currentSide != relative.left());
             }
+            cube.rotateSide(relative.front(), currentSide != relative.left());
         }
         // Now the cubid is positioned at the relative upper-front position
         if (cube.getCubid(edgeCoordinates({relative.front(), relative.up()})).getColor(relative.front()) == cube.getCenterColor(relative.front())) {
