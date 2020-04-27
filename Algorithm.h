@@ -20,6 +20,8 @@ void topFace(RubikCube& cube);
 
 void topLayer(RubikCube& cube);
 
+void finishTop(RubikCube& cube);
+
 void layerSolve(RubikCube& cube);
 
 }

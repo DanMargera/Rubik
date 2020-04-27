@@ -419,6 +419,50 @@ void Algorithm::topLayer(RubikCube& cube)
     }
 }
 
+void Algorithm::finishTop(RubikCube& cube)
+{
+    using namespace operations;
+    RelativeCubeView relative;
+
+    std::array<Cubid*, 4> corners{
+        &cube.getCubid(cornerCoordinates({relative.up(), relative.left(), relative.front()})),
+        &cube.getCubid(cornerCoordinates({relative.up(), relative.left(), relative.back()})),
+        &cube.getCubid(cornerCoordinates({relative.up(), relative.right(), relative.front()})),
+        &cube.getCubid(cornerCoordinates({relative.up(), relative.right(), relative.back()}))
+    };
+
+    std::array<Cubid*, 4> edges{
+        &cube.getCubid(edgeCoordinates({relative.up(), relative.front()})),
+        &cube.getCubid(edgeCoordinates({relative.up(), relative.left()})),
+        &cube.getCubid(edgeCoordinates({relative.up(), relative.right()})),
+        &cube.getCubid(edgeCoordinates({relative.up(), relative.back()}))
+    };
+
+    auto hasMatchingSide = [&relative,&corners,&edges] () {
+        return edges[0]->getColor(relative.front()) == corners[0]->getColor(relative.front()) ||
+               edges[1]->getColor(relative.left()) == corners[1]->getColor(relative.left()) ||
+               edges[2]->getColor(relative.right()) == corners[2]->getColor(relative.right()) ||
+               edges[3]->getColor(relative.back()) == corners[3]->getColor(relative.back());
+    };
+
+    if (!hasMatchingSide()) {
+        moveSequence(cube, relative, {F2, U, L, -R, F2, -L, R, U, F2});
+    }
+
+    while (corners[3]->getColor(relative.back()) != edges[3]->getColor(relative.back())) {
+        // Move matching side to the back
+        cube.rotateSide(relative.up(), false);
+    }
+
+    while (corners[0]->getColor(relative.front()) != edges[0]->getColor(relative.front())) {
+        moveSequence(cube, relative, {F2, U, L, -R, F2, -L, R, U, F2});
+    }
+
+    while (edges[0]->getColor(relative.front()) != cube.getCenterColor(relative.front())) {
+        cube.rotateSide(relative.up(), false);
+    }
+}
+
 void Algorithm::layerSolve(RubikCube& cube)
 {
     downCross(cube);
@@ -427,4 +471,5 @@ void Algorithm::layerSolve(RubikCube& cube)
     topCross(cube);
     topFace(cube);
     topLayer(cube);
+    finishTop(cube);
 }

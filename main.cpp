@@ -28,12 +28,6 @@ int main()
         else if (opt == "v") c.turn(/*horizontal*/false, false);
         else if (opt == "-v") c.turn(/*horizontal*/false, true);
         else if (opt == "shuffle") c.shuffle();
-        else if (opt == "downcross") Algorithm::downCross(c);
-        else if (opt == "downcorners") Algorithm::downCorners(c);
-        else if (opt == "middlelayer") Algorithm::middleLayer(c);
-        else if (opt == "topcross") Algorithm::topCross(c);
-        else if (opt == "topface") Algorithm::topFace(c);
-        else if (opt == "toplayer") Algorithm::topLayer(c);
         else if (opt == "layersolve") Algorithm::layerSolve(c);
         else if (opt == "reset") c = RubikCube();
         else if (opt == "brute") Algorithm::bruteSolve(c, 6);
