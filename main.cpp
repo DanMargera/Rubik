@@ -30,14 +30,21 @@ static void toLower(std::string& s)
             [](unsigned char c){ return std::tolower(c); });
 }
 
+static void clear()
+{
+    printf("\033[H""\033[J");
+}
+
 int main()
 {
     RubikCube c;
+    clear();
     c.print();
     help();
     std::string opt;
     while (opt != "q") {
         std::cin >> opt;
+        clear();
         toLower(opt);
         if (opt == "r") c.rotateSide(Position::right, false);
         else if (opt == "-r") c.rotateSide(Position::right, true);
@@ -71,6 +78,7 @@ int main()
             std::cout << "Solved? " << c.isSolved() << std::endl;
             continue;
         } else if (opt != "q") {
+            c.print();
             help();
             continue;
         }
