@@ -35,6 +35,7 @@ int main()
             Algorithm::layerSolve(c);
             std::cout << " }" << std::endl;
             std::cout << "Solved cube in " << c.getMoveCount() << " moves." << std::endl;
+            c.setVerboseMoves(false);
         }
         else if (opt == "reset") c = RubikCube();
         else if (opt == "brute") Algorithm::bruteSolve(c, 6);
