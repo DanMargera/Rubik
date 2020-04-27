@@ -377,6 +377,48 @@ void Algorithm::topFace(RubikCube& cube)
     }
 }
 
+void Algorithm::topLayer(RubikCube& cube)
+{
+    using namespace operations;
+    RelativeCubeView relative;
+
+    std::array<Cubid*, 4> corners{
+        &cube.getCubid(cornerCoordinates({relative.up(), relative.left(), relative.front()})),
+        &cube.getCubid(cornerCoordinates({relative.up(), relative.left(), relative.back()})),
+        &cube.getCubid(cornerCoordinates({relative.up(), relative.right(), relative.front()})),
+        &cube.getCubid(cornerCoordinates({relative.up(), relative.right(), relative.back()}))
+    };
+
+    auto countMatchingSides = [&relative,&corners] () {
+        int c = 0;
+        c += corners[0]->getColor(relative.left()) == corners[1]->getColor(relative.left());
+        c += corners[2]->getColor(relative.right()) == corners[3]->getColor(relative.right());
+        c += corners[0]->getColor(relative.front()) == corners[2]->getColor(relative.front());
+        c += corners[1]->getColor(relative.back()) == corners[3]->getColor(relative.back());
+        return c;
+    };
+
+    int solved = countMatchingSides();
+
+    auto& cubidLF = *corners[0];
+    while (solved != 4) {
+        if (solved == 0) {
+            // Diagonals, rotate until something matches with the front
+            while (corners[0]->getColor(relative.front()) != cube.getCenterColor(relative.front()) &&
+                   corners[2]->getColor(relative.front()) != cube.getCenterColor(relative.front())) {
+                cube.rotateSide(relative.up(), false);
+            }
+        } else {
+            // Rotate until matching side is at the back
+            while (corners[1]->getColor(relative.back()) != corners[3]->getColor(relative.back())) {
+                cube.rotateSide(relative.up(), false);
+            }
+        }
+        moveSequence(cube, relative, {-R, F, -R, B2, R, -F, -R, B2, R2, -U});
+        solved = countMatchingSides();
+    }
+}
+
 void Algorithm::layerSolve(RubikCube& cube)
 {
     downCross(cube);
@@ -384,4 +426,5 @@ void Algorithm::layerSolve(RubikCube& cube)
     middleLayer(cube);
     topCross(cube);
     topFace(cube);
+    topLayer(cube);
 }

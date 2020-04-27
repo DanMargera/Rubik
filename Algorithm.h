@@ -18,6 +18,8 @@ void topCross(RubikCube& cube);
 
 void topFace(RubikCube& cube);
 
+void topLayer(RubikCube& cube);
+
 void layerSolve(RubikCube& cube);
 
 }
