@@ -74,11 +74,19 @@ class RubikCube
 
         std::array<std::array<std::array<Cubid, 3>, 3>, 3>& getCubids() { return m_cubids; }
 
+        void setVerboseMoves(bool b) { m_verboseMoves = b; }
+
+        void resetMoveCount() { m_moveCount = 0; }
+        int getMoveCount() { return m_moveCount; }
+
     private:
         void setupFaces();
 
         std::array<std::array<std::array<Cubid, 3>, 3>, 3> m_cubids;
         std::array<std::vector<Cubid*>, 6> m_sides;
+
+        int m_moveCount{0};
+        bool m_verboseMoves{false};
 };
 
 #endif

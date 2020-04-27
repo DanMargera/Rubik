@@ -78,6 +78,10 @@ RubikCube::rotateSide(Position cubeSide, bool reverse)
     };
 
     applyTransformToSide(rotate, cubeSide, s_axisMap.at(cubeSide));
+    ++m_moveCount;
+    if (m_verboseMoves) {
+        std::cout << moveToString(cubeSide, reverse) << " ";
+    }
 }
 
 void

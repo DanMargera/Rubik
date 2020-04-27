@@ -129,6 +129,8 @@ enum class CubidType
     any=-1
 };
 
+std::string moveToString(Position side, bool reverse);
+
 }
 
 #endif

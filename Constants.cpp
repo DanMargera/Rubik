@@ -98,6 +98,33 @@ std::string RubikConstants::toString(const Color c)
     return retVal + value(c) + "\e[0m";
 }
 
+std::string RubikConstants::moveToString(Position side, bool reverse)
+{
+    std::string sideStr;
+    switch (side)
+    {
+        case Position::up:
+            sideStr = "U";
+            break;
+        case Position::down:
+            sideStr = "D";
+            break;
+        case Position::left:
+            sideStr = "L";
+            break;
+        case Position::right:
+            sideStr = "R";
+            break;
+        case Position::front:
+            sideStr = "F";
+            break;
+        case Position::back:
+            sideStr = "B";
+            break;
+    }
+    return (reverse ? "-" : "") + sideStr;
+}
+
 bool Coordinates::operator==(const Coordinates& other) const noexcept
 {
     return x == other.x && y == other.y && z == other.z;

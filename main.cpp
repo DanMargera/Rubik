@@ -28,7 +28,14 @@ int main()
         else if (opt == "v") c.turn(/*horizontal*/false, false);
         else if (opt == "-v") c.turn(/*horizontal*/false, true);
         else if (opt == "shuffle") c.shuffle();
-        else if (opt == "layersolve") Algorithm::layerSolve(c);
+        else if (opt == "layersolve") {
+            c.resetMoveCount();
+            c.setVerboseMoves(true);
+            std::cout << "{ ";
+            Algorithm::layerSolve(c);
+            std::cout << " }" << std::endl;
+            std::cout << "Solved cube in " << c.getMoveCount() << " moves." << std::endl;
+        }
         else if (opt == "reset") c = RubikCube();
         else if (opt == "brute") Algorithm::bruteSolve(c, 6);
         else if (opt == "s?") {
