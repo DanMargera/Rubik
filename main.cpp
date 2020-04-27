@@ -33,6 +33,7 @@ static void toLower(std::string& s)
 static void clear()
 {
     printf("\033[H""\033[J");
+    std::cout << std::flush;
 }
 
 int main()
@@ -64,12 +65,13 @@ int main()
         else if (opt == "-v") c.turn(/*horizontal*/false, true);
         else if (opt == "shuffle") c.shuffle();
         else if (opt == "layersolve") {
+            c.print();
             c.resetMoveCount();
             c.setVerboseMoves(true);
-            std::cout << "{ ";
+            std::cout << "\n{ ";
             Algorithm::layerSolve(c);
-            std::cout << " }" << std::endl;
-            std::cout << "Solved cube in " << c.getMoveCount() << " moves." << std::endl;
+            std::cout << " }\n" << std::endl;
+            std::cout << "Solved cube in " << c.getMoveCount() << " moves.\n" << std::endl;
             c.setVerboseMoves(false);
         }
         else if (opt == "reset") c = RubikCube();
