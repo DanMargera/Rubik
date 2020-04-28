@@ -79,6 +79,8 @@ class RubikCube
         void resetMoveCount() { m_moveCount = 0; }
         int getMoveCount() { return m_moveCount; }
 
+        void reset();
+
     private:
         void setupFaces();
 

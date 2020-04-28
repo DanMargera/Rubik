@@ -102,11 +102,6 @@ RubikCube::setupFaces()
             }
         }
     }
-}
-
-RubikCube::RubikCube()
-{
-    setupFaces();
 
     auto setFaceColor = [] (Cubid* cubid, Position p, Color c) {
         cubid->setFaceColor(p, c);
@@ -115,6 +110,22 @@ RubikCube::RubikCube()
     for (const auto& posColor : s_defaultSideColors) {
         applyTransformToSide(setFaceColor, posColor.first, posColor.first, posColor.second);
     }
+}
+
+void
+RubikCube::reset()
+{
+    m_cubids = std::move(std::array<std::array<std::array<Cubid, 3>, 3>, 3>());
+    m_sides = std::move(std::array<std::vector<Cubid*>, 6>());
+    m_moveCount = 0;
+    m_verboseMoves = false;
+
+    setupFaces();
+}
+
+RubikCube::RubikCube()
+{
+    setupFaces();
 }
 
 void

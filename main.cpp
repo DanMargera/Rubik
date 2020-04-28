@@ -74,7 +74,7 @@ int main()
             std::cout << "Solved cube in " << c.getMoveCount() << " moves.\n" << std::endl;
             c.setVerboseMoves(false);
         }
-        else if (opt == "reset") c = RubikCube();
+        else if (opt == "reset") c.reset();
         else if (opt == "brute") Algorithm::bruteSolve(c, 6);
         else if (opt == "s?") {
             std::cout << "Solved? " << c.isSolved() << std::endl;
