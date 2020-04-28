@@ -4,8 +4,8 @@ CXXFLAGS=-c -O2
 all: main.o Rubik.o Constants.o Algorithm.o
 	$(CXX) main.o Rubik.o Constants.o Algorithm.o -o r
 
-main.o: main.cpp Rubik.h Constants.h Algorithm.h
-	$(CXX) $(CXXFLAGS) main.cpp
+main.o: windows_main.cpp Rubik.h Constants.h Algorithm.h
+	$(CXX) $(CXXFLAGS) windows_main.cpp
 
 Algorithm.o: Algorithm.cpp Algorithm.h Rubik.h
 	$(CXX) $(CXXFLAGS) Algorithm.cpp
