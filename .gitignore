@@ -27,3 +27,6 @@
 *.exe
 *.out
 r
+
+# Vscode settings
+.vscode
