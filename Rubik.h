@@ -80,6 +80,7 @@ class RubikCube
         int getMoveCount() { return m_moveCount; }
 
         void reset();
+        void zoom();
 
     private:
         void setupFaces();
@@ -89,6 +90,7 @@ class RubikCube
 
         int m_moveCount{0};
         bool m_verboseMoves{false};
+        bool m_zoom{true};
 };
 
 #endif

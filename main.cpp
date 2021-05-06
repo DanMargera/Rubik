@@ -11,8 +11,9 @@ static void help()
     std::cout << "\e[1m- \e[38;5;208mASCII \e[38;5;196mR\e[38;5;165mu\e[38;5;27mb\e[38;5;118mi\e[38;5;226mk\e[0m \e[1mCommands -\n"
               << optColor << "  shuffle     \e[0m" << " Shuffles cube. Applies 15~25 random rotations.\n"
               << optColor << "  layersolve  \e[0m" << " Applies an inneficient layer solving algorithm. 150+ moves.\n"
-              << optColor << "  brute       \e[0m" << " Explores all possible combinations of 6 moves from the current state.\n"
+              << optColor << "  brute       \e[0m" << " Explores all possible combinations of 6 moves.\n"
               << optColor << "  reset       \e[0m" << " Resets the initial state of the cube.\n"
+              << optColor << "  zoom        \e[0m" << " Toggles zoom view in the cube.\n"
               << optColor << "  help        \e[0m" << " Prints this help text.\n"
               << optColor << "  q           \e[0m" << " Quit.\n\n"
 
@@ -75,6 +76,7 @@ int main()
             c.setVerboseMoves(false);
         }
         else if (opt == "reset") c.reset();
+        else if (opt == "zoom") c.zoom();
         else if (opt == "brute") Algorithm::bruteSolve(c, 6);
         else if (opt == "s?") {
             std::cout << "Solved? " << c.isSolved() << std::endl;
