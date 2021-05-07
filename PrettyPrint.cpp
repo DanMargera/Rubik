@@ -80,22 +80,22 @@ pp::LeftView::LeftView(RubikCube& c, int verticalPadding)
     // all front and down faces should repeat 6 times
     int fr = 6;
     int dr = 6;
-    addLine(fmt::format("       _____________________"));
-    addLine(fmt::format("      /|{}|{}|{}|", repeat(f7, fr), repeat(f8, fr), repeat(f9, fr)));
-    addLine(fmt::format("     /{}|{}|{}|{}|", l9, repeat(f7, fr), repeat(f8, fr), repeat(f9, fr)));
-    addLine(fmt::format("    /|{}|______|______|______|", l9));
-    addLine(fmt::format("   /{}|/|{}|{}|{}|", l8, repeat(f4, fr), repeat(f5, fr), repeat(f6, fr)));
-    addLine(fmt::format("  /|{}/{}|{}|{}|{}|", l8, l6, repeat(f4, fr), repeat(f5, fr), repeat(f6, fr)));
-    addLine(fmt::format(" /{}|/|{}|______|______|______|", l7, l6));
-    addLine(fmt::format(" |{}/{}|/|{}|{}|{}|", l7, l5, repeat(f1, fr), repeat(f2, fr), repeat(f3, fr)));
-    addLine(fmt::format(" |/|{}/{}|{}|{}|{}|", l5, l3, repeat(f1, fr), repeat(f2, fr), repeat(f3, fr)));
-    addLine(fmt::format(" |{}|/|{}|______|______|______|", l4, l3));
-    addLine(fmt::format(" |{}/{}|/{}/{}/{}/", l4, l2, repeat(d3, dr), repeat(d2, dr), repeat(d1, dr)));
-    addLine(fmt::format(" |/|{}/______/______/______/", l2));
-    addLine(fmt::format(" |{}|/{}/{}/{}/", l1, repeat(d6, dr), repeat(d5, dr), repeat(d4, dr)));
-    addLine(fmt::format(" |{}/------/------/------/", l1));
-    addLine(fmt::format(" |/{}/{}/{}/", repeat(d9, dr), repeat(d8, dr), repeat(d7, dr)));
-    addLine(fmt::format("  ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾"));
+    addLine(fmt::format("      _____________________"));
+    addLine(fmt::format("     /|{}|{}|{}|", repeat(f7, fr), repeat(f8, fr), repeat(f9, fr)));
+    addLine(fmt::format("    /{}|{}|{}|{}|", l9, repeat(f7, fr), repeat(f8, fr), repeat(f9, fr)));
+    addLine(fmt::format("   /|{}|______|______|______|", l9));
+    addLine(fmt::format("  /{}|/|{}|{}|{}|", l8, repeat(f4, fr), repeat(f5, fr), repeat(f6, fr)));
+    addLine(fmt::format(" /|{}/{}|{}|{}|{}|", l8, l6, repeat(f4, fr), repeat(f5, fr), repeat(f6, fr)));
+    addLine(fmt::format("/{}|/|{}|______|______|______|", l7, l6));
+    addLine(fmt::format("|{}/{}|/|{}|{}|{}|", l7, l5, repeat(f1, fr), repeat(f2, fr), repeat(f3, fr)));
+    addLine(fmt::format("|/|{}/{}|{}|{}|{}|", l5, l3, repeat(f1, fr), repeat(f2, fr), repeat(f3, fr)));
+    addLine(fmt::format("|{}|/|{}|______|______|______|", l4, l3));
+    addLine(fmt::format("|{}/{}|/{}/{}/{}/", l4, l2, repeat(d3, dr), repeat(d2, dr), repeat(d1, dr)));
+    addLine(fmt::format("|/|{}/______/______/______/", l2));
+    addLine(fmt::format("|{}|/{}/{}/{}/", l1, repeat(d6, dr), repeat(d5, dr), repeat(d4, dr)));
+    addLine(fmt::format("|{}/------/------/------/", l1));
+    addLine(fmt::format("|/{}/{}/{}/", repeat(d9, dr), repeat(d8, dr), repeat(d7, dr)));
+    addLine(fmt::format(" ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾"));
 }
 
 pp::MainView::MainView(RubikCube& c)
@@ -133,29 +133,29 @@ pp::MainView::MainView(RubikCube& c)
 
     int fr = 6;
     int ur = 6;
-    addLine(fmt::format("           _____________________"));
-    addLine(fmt::format("          /{}/{}/{}/|", repeat(u7, ur), repeat(u8, ur), repeat(u9, ur)));
-    addLine(fmt::format("         /{}/{}/{}/{}|", repeat(u7, ur), repeat(u8, ur), repeat(u9, ur), r9));
-    addLine(fmt::format("        /______/______/______/{}|", repeat(r9, 2)));
-    addLine(fmt::format("       /{}/{}/{}/|{}|", repeat(u4, ur), repeat(u5, ur), repeat(u6, ur), repeat(r9, 2)));
-    addLine(fmt::format("      /{}/{}/{}/{}|{}/|", repeat(u4, ur), repeat(u5, ur), repeat(u6, ur), r8, r9));
-    addLine(fmt::format("     /______/______/______/{}|/{}|", repeat(r8, 2), r6));
-    addLine(fmt::format("    /{}/{}/{}/|{}|{}|", repeat(u1, ur), repeat(u2, ur), repeat(u3, ur), repeat(r8, 2), repeat(r6, 2)));
-    addLine(fmt::format("   /{}/{}/{}/{}|{}/|{}/|", repeat(u1, ur), repeat(u2, ur), repeat(u3, ur), r7, r8, r6));
-    addLine(fmt::format("  /______/______/______/{}|/{}|/{}|", repeat(r7, 2), r5, r3));
-    addLine(fmt::format("  |{}|{}|{}|{}|{}|{}|", repeat(f7, fr), repeat(f8, fr), repeat(f9, fr), repeat(r7, 2), repeat(r5, 2), repeat(r3,2)));
-    addLine(fmt::format("  |{}|{}|{}|{}/|{}/|{}/", repeat(f7, fr), repeat(f8, fr), repeat(f9, fr), r7, r5, r3));
-    addLine(fmt::format("  |______|______|______|/{}|/{}|/", r4, r2));
-    addLine(fmt::format("  |{}|{}|{}|{}|{}|", repeat(f4, fr), repeat(f5, fr), repeat(f6, fr), repeat(r4, 2), repeat(r2, 2)));
-    addLine(fmt::format("  |{}|{}|{}|{}/|{}/", repeat(f4, fr), repeat(f5, fr), repeat(f6, fr), r4, r2));
-    addLine(fmt::format("  |______|______|______|/{}|/", r1));
-    addLine(fmt::format("  |{}|{}|{}|{}|", repeat(f1, fr), repeat(f2, fr), repeat(f3, fr), repeat(r1, 2)));
-    addLine(fmt::format("  |{}|{}|{}|{}/", repeat(f1, fr), repeat(f2, fr), repeat(f3, fr), r1));
-    addLine(fmt::format("  |______|______|______|/"));
+    addLine(fmt::format("         _____________________"));
+    addLine(fmt::format("        /{}/{}/{}/|", repeat(u7, ur), repeat(u8, ur), repeat(u9, ur)));
+    addLine(fmt::format("       /{}/{}/{}/{}|", repeat(u7, ur), repeat(u8, ur), repeat(u9, ur), r9));
+    addLine(fmt::format("      /______/______/______/{}|", repeat(r9, 2)));
+    addLine(fmt::format("     /{}/{}/{}/|{}|", repeat(u4, ur), repeat(u5, ur), repeat(u6, ur), repeat(r9, 2)));
+    addLine(fmt::format("    /{}/{}/{}/{}|{}/|", repeat(u4, ur), repeat(u5, ur), repeat(u6, ur), r8, r9));
+    addLine(fmt::format("   /______/______/______/{}|/{}|", repeat(r8, 2), r6));
+    addLine(fmt::format("  /{}/{}/{}/|{}|{}|", repeat(u1, ur), repeat(u2, ur), repeat(u3, ur), repeat(r8, 2), repeat(r6, 2)));
+    addLine(fmt::format(" /{}/{}/{}/{}|{}/|{}/|", repeat(u1, ur), repeat(u2, ur), repeat(u3, ur), r7, r8, r6));
+    addLine(fmt::format("/______/______/______/{}|/{}|/{}|", repeat(r7, 2), r5, r3));
+    addLine(fmt::format("|{}|{}|{}|{}|{}|{}|", repeat(f7, fr), repeat(f8, fr), repeat(f9, fr), repeat(r7, 2), repeat(r5, 2), repeat(r3,2)));
+    addLine(fmt::format("|{}|{}|{}|{}/|{}/|{}/", repeat(f7, fr), repeat(f8, fr), repeat(f9, fr), r7, r5, r3));
+    addLine(fmt::format("|______|______|______|/{}|/{}|/", r4, r2));
+    addLine(fmt::format("|{}|{}|{}|{}|{}|", repeat(f4, fr), repeat(f5, fr), repeat(f6, fr), repeat(r4, 2), repeat(r2, 2)));
+    addLine(fmt::format("|{}|{}|{}|{}/|{}/", repeat(f4, fr), repeat(f5, fr), repeat(f6, fr), r4, r2));
+    addLine(fmt::format("|______|______|______|/{}|/", r1));
+    addLine(fmt::format("|{}|{}|{}|{}|", repeat(f1, fr), repeat(f2, fr), repeat(f3, fr), repeat(r1, 2)));
+    addLine(fmt::format("|{}|{}|{}|{}/", repeat(f1, fr), repeat(f2, fr), repeat(f3, fr), r1));
+    addLine(fmt::format("|______|______|______|/"));
 }
 
-static std::string
-colorize(const Color c, const std::string& str)
+std::string
+pp::TerminalPrinter::colorize(const Color c, const std::string& str)
 {
     std::string retVal;
     switch (c)
@@ -187,8 +187,8 @@ colorize(const Color c, const std::string& str)
     return retVal + str + "\e[0m";
 }
 
-static std::string
-replaceCubeColors(const std::string& str)
+std::string
+pp::TerminalPrinter::getColorizedViewString(const std::string& viewStr)
 {
     std::string colorized;
 
@@ -205,7 +205,7 @@ replaceCubeColors(const std::string& str)
     {
         auto pair = regexStack.top();
         regexStack.pop();
-        const std::string& previous = colorized.empty() ? str : colorized;
+        const std::string& previous = colorized.empty() ? viewStr : colorized;
         colorized = std::regex_replace(previous, pair.first, pair.second);
     }
 
@@ -213,17 +213,38 @@ replaceCubeColors(const std::string& str)
 }
 
 void
+pp::TerminalPrinter::print(std::list<const PrintView*> viewList)
+{
+    std::stringstream stream;
+    auto gapSize = [&] (const PrintView& view, int lineNum)
+    {
+        return view.horizontalSize() - view.line(lineNum).size() + m_gapSize;
+    };
+    int maxLines = (*std::max_element(viewList.begin(),
+                                      viewList.end(),
+                                      [](const PrintView *v1, const PrintView *v2) {
+                                          return v1->verticalSize() < v2->verticalSize();
+                                      }))
+                       ->verticalSize();
+    for (int i=0; i<maxLines; ++i)
+    {
+        auto viewNumber = 0;
+        for (const PrintView* v : viewList)
+        {
+            stream << v->line(i) << (++viewNumber < viewList.size() ? repeat(" ", gapSize(*v, i)) : "");
+        }
+        stream << "\n";
+    }
+    std::cout << getColorizedViewString(stream.str()) << std::flush;
+}
+
+void
 pp::printRubikCube(RubikCube& c)
 {
-    int gapSize = 4;
-    std::stringstream stream;
+    TerminalPrinter tp;
     LeftView lv(c);
     MainView mv(c);
-    for (int i=0; i<std::max(lv.verticalSize(), mv.verticalSize()); ++i)
-    {
-        stream << lv.line(i) << repeat(" ", lv.horizontalSize() - lv.line(i).size() + gapSize) << mv.line(i) << "\n";
-    }
-    std::cout << replaceCubeColors(stream.str()) << std::flush;
+    tp.print({&lv, &mv});
 }
 
 /* legacy print

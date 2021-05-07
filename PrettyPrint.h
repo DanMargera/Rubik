@@ -1,6 +1,9 @@
 #ifndef PRETTY_PRINT_H
 #define PRETTY_PRINT_H
 
+#include "Constants.h"
+
+#include <list>
 #include <string>
 #include <vector>
 
@@ -32,6 +35,19 @@ class MainView : public PrintView
 {
     public:
         MainView(RubikCube& c);
+};
+
+class TerminalPrinter
+{
+    public:
+        TerminalPrinter() = default;
+        TerminalPrinter(bool colorize, int gapSize) : m_colorize(colorize), m_gapSize(gapSize) { }
+        void print(std::list<const PrintView*> views);
+    private:
+        std::string colorize(RubikConstants::Color c, const std::string& viewStr);
+        std::string getColorizedViewString(const std::string& viewStr);
+        int m_gapSize{4};
+        bool m_colorize{true};
 };
 
 void printRubikCube(RubikCube& c);
