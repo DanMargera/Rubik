@@ -85,6 +85,58 @@ pp::LeftView::LeftView(RubikCube& c, int verticalPadding)
 
 pp::MainView::MainView(RubikCube& c)
 {
+    auto& cubids = c.getCubids();
+    std::string u1 = toString(cubids[0][0][0].getColor(Position::up));
+    std::string u2 = toString(cubids[1][0][0].getColor(Position::up));
+    std::string u3 = toString(cubids[2][0][0].getColor(Position::up));
+    std::string u4 = toString(cubids[0][0][1].getColor(Position::up));
+    std::string u5 = toString(cubids[1][0][1].getColor(Position::up));
+    std::string u6 = toString(cubids[2][0][1].getColor(Position::up));
+    std::string u7 = toString(cubids[0][0][2].getColor(Position::up));
+    std::string u8 = toString(cubids[1][0][2].getColor(Position::up));
+    std::string u9 = toString(cubids[2][0][2].getColor(Position::up));
+
+    std::string r1 = toString(cubids[2][2][0].getColor(Position::right));
+    std::string r2 = toString(cubids[2][2][1].getColor(Position::right));
+    std::string r3 = toString(cubids[2][2][2].getColor(Position::right));
+    std::string r4 = toString(cubids[2][1][0].getColor(Position::right));
+    std::string r5 = toString(cubids[2][1][1].getColor(Position::right));
+    std::string r6 = toString(cubids[2][1][2].getColor(Position::right));
+    std::string r7 = toString(cubids[2][0][0].getColor(Position::right));
+    std::string r8 = toString(cubids[2][0][1].getColor(Position::right));
+    std::string r9 = toString(cubids[2][0][2].getColor(Position::right));
+
+    std::string f1 = toString(cubids[0][2][0].getColor(Position::front));
+    std::string f2 = toString(cubids[1][2][0].getColor(Position::front));
+    std::string f3 = toString(cubids[2][2][0].getColor(Position::front));
+    std::string f4 = toString(cubids[0][1][0].getColor(Position::front));
+    std::string f5 = toString(cubids[1][1][0].getColor(Position::front));
+    std::string f6 = toString(cubids[2][1][0].getColor(Position::front));
+    std::string f7 = toString(cubids[0][0][0].getColor(Position::front));
+    std::string f8 = toString(cubids[1][0][0].getColor(Position::front));
+    std::string f9 = toString(cubids[2][0][0].getColor(Position::front));
+
+    int fr = 6;
+    int ur = 6;
+    addLine(fmt::format("           _____________________"));
+    addLine(fmt::format("          /{upr7}/{upr8}/{upr9}/|", repeat(u7, ur), repeat(u8, ur), repeat(u8, ur)));
+    addLine(fmt::format("         /{upr7}/{upr8}/{upr9}/{}|", repeat(u8, ur), repeat(u8, ur), repeat(u8, ur), r9));
+    addLine(fmt::format("        /______/______/______/{9}|", repeat(r9, 2)));
+    addLine(fmt::format("       /{upr4}/{upr5}/{upr6}/|{9}|", repeat(u4, ur), repeat(u5, ur), repeat(u6, ur), repeat(r9, 2)));
+    addLine(fmt::format("      /{upr4}/{upr5}/{upr6}/{}|{}/|", repeat(u4, ur), repeat(u5, ur), repeat(u6, ur), r8, r9));
+    addLine(fmt::format("     /______/______/______/{8}|/{}|", repeat(r8, 2), r6));
+    addLine(fmt::format("    /{upr1}/{upr2}/{upr3}/|{8}|{6}|", repeat(u1, ur), repeat(u2, ur), repeat(u3, ur), repeat(r8, 2), repeat(r6, 2)));
+    addLine(fmt::format("   /{upr1}/{upr2}/{upr3}/{}|{}/|{}/|", repeat(u1, ur), repeat(u2, ur), repeat(u2, ur), r7, r8, r6));
+    addLine(fmt::format("  /______/______/______/{7}|/{}|/{}|", repeat(r7, 2), r5, r3));
+    addLine(fmt::format("  |{frt7}|{frt8}|{frt9}|{7}|{5}|{3}|", repeat(f7, fr), repeat(f8, fr), repeat(f9, fr), repeat(r7, 2), repeat(r5, 2), repeat(r3,2)));
+    addLine(fmt::format("  |{frt7}|{frt8}|{frt9}|{}/|{}/|{}/", repeat(f7, fr), repeat(f8, fr), repeat(f9, fr), r7, r5, r3));
+    addLine(fmt::format("  |______|______|______|/{}|/{}|/", r4, r2));
+    addLine(fmt::format("  |{frt4}|{frt5}|{frt6}|{4}|{2}|", repeat(f4, fr), repeat(f5, fr), repeat(f6, fr), repeat(r4, 2), repeat(r2, 2)));
+    addLine(fmt::format("  |{frt4}|{frt5}|{frt6}|{}/|{}/", repeat(f4, fr), repeat(f5, fr), repeat(f6, fr), r4, r2));
+    addLine(fmt::format("  |______|______|______|/{}|/", r1));
+    addLine(fmt::format("  |{frt1}|{frt2}|{frt3}|{1}|", repeat(f1, fr), repeat(f2, fr), repeat(f3, fr), repeat(r1, 2)));
+    addLine(fmt::format("  |{frt1}|{frt2}|{frt3}|{}/", repeat(f1, fr), repeat(f2, fr), repeat(f3, fr), r1));
+    addLine(fmt::format("  |______|______|______|/"));
 }
 
 void pp::printRubikCube(RubikCube& c)
