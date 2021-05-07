@@ -1,5 +1,7 @@
 #include "Algorithm.h"
 #include "Rubik.h"
+#include "PrettyPrint.h"
+
 #include <algorithm>
 #include <iostream>
 #include <stdlib.h>
@@ -41,7 +43,7 @@ int main()
 {
     RubikCube c;
     clear();
-    c.print();
+    pp::printRubikCube(c);
     help();
     std::string opt;
     while (opt != "q") {
@@ -66,7 +68,7 @@ int main()
         else if (opt == "-v") c.turn(/*horizontal*/false, true);
         else if (opt == "shuffle") c.shuffle();
         else if (opt == "layersolve") {
-            c.print();
+            pp::printRubikCube(c);
             c.resetMoveCount();
             c.setVerboseMoves(true);
             std::cout << "\n{ ";
@@ -76,17 +78,17 @@ int main()
             c.setVerboseMoves(false);
         }
         else if (opt == "reset") c.reset();
-        else if (opt == "zoom") c.zoom();
+        else if (opt == "zoom") c.toggleZoom();
         else if (opt == "brute") Algorithm::bruteSolve(c, 6);
         else if (opt == "s?") {
             std::cout << "Solved? " << c.isSolved() << std::endl;
             continue;
         } else if (opt != "q") {
-            c.print();
+            pp::printRubikCube(c);
             help();
             continue;
         }
-        c.print();
+        pp::printRubikCube(c);
     }
 
     return 0;

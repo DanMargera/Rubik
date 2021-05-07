@@ -80,7 +80,8 @@ class RubikCube
         int getMoveCount() { return m_moveCount; }
 
         void reset();
-        void zoom();
+        void toggleZoom();
+        bool zoom() const { return m_zoom; };
 
     private:
         void setupFaces();
