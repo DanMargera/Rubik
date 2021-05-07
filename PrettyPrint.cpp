@@ -3,6 +3,14 @@
 
 #include <iostream>
 
+pp::LeftView::LeftView(RubikCube& c)
+{
+}
+
+pp::MainView::MainView(RubikCube& c)
+{
+}
+
 void pp::printRubikCube(RubikCube& c)
 {
     auto& cubids = c.getCubids();
