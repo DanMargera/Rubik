@@ -1,11 +1,15 @@
 #include "PrettyPrint.h"
 #include "Rubik.h"
 
+#include <algorithm>
 #include <fmt/core.h>
 #include <iostream>
+#include <regex>
+#include <sstream>
+#include <stack>
 
 static std::string
-repeat(const std::string &s, int times)
+repeat(const std::string& s, int times)
 {
     std::string ret(s);
     for (int i=1; i<times; ++i)
@@ -15,12 +19,23 @@ repeat(const std::string &s, int times)
     return ret;
 }
 
+static std::string
+repeat(char c, int times)
+{
+    std::string ret;
+    for (int i=0; i<times; ++i)
+    {
+        ret += c;
+    }
+    return ret;
+}
+
 void
 pp::PrintView::addLine(std::string&& line)
 {
-    if (line.length() > m_horizontalSize)
+    if (line.size() > m_horizontalSize && line.find("‾") == std::string::npos)
     {
-        m_horizontalSize = line.length();
+        m_horizontalSize = line.size();
     }
     m_lines.emplace_back(std::move(line));
 }
@@ -28,35 +43,35 @@ pp::PrintView::addLine(std::string&& line)
 pp::LeftView::LeftView(RubikCube& c, int verticalPadding)
 {
     auto& cubids = c.getCubids();
-    std::string f1 = toString(cubids[0][2][0].getColor(Position::front));
-    std::string f2 = toString(cubids[1][2][0].getColor(Position::front));
-    std::string f3 = toString(cubids[2][2][0].getColor(Position::front));
-    std::string f4 = toString(cubids[0][1][0].getColor(Position::front));
-    std::string f5 = toString(cubids[1][1][0].getColor(Position::front));
-    std::string f6 = toString(cubids[2][1][0].getColor(Position::front));
-    std::string f7 = toString(cubids[0][0][0].getColor(Position::front));
-    std::string f8 = toString(cubids[1][0][0].getColor(Position::front));
-    std::string f9 = toString(cubids[2][0][0].getColor(Position::front));
+    char f1 = RubikConstants::value(cubids[0][2][0].getColor(Position::front));
+    char f2 = RubikConstants::value(cubids[1][2][0].getColor(Position::front));
+    char f3 = RubikConstants::value(cubids[2][2][0].getColor(Position::front));
+    char f4 = RubikConstants::value(cubids[0][1][0].getColor(Position::front));
+    char f5 = RubikConstants::value(cubids[1][1][0].getColor(Position::front));
+    char f6 = RubikConstants::value(cubids[2][1][0].getColor(Position::front));
+    char f7 = RubikConstants::value(cubids[0][0][0].getColor(Position::front));
+    char f8 = RubikConstants::value(cubids[1][0][0].getColor(Position::front));
+    char f9 = RubikConstants::value(cubids[2][0][0].getColor(Position::front));
 
-    std::string l1 = toString(cubids[0][2][2].getColor(Position::left));
-    std::string l2 = toString(cubids[0][2][1].getColor(Position::left));
-    std::string l3 = toString(cubids[0][2][0].getColor(Position::left));
-    std::string l4 = toString(cubids[0][1][2].getColor(Position::left));
-    std::string l5 = toString(cubids[0][1][1].getColor(Position::left));
-    std::string l6 = toString(cubids[0][1][0].getColor(Position::left));
-    std::string l7 = toString(cubids[0][0][2].getColor(Position::left));
-    std::string l8 = toString(cubids[0][0][1].getColor(Position::left));
-    std::string l9 = toString(cubids[0][0][0].getColor(Position::left));
+    char l1 = RubikConstants::value(cubids[0][2][2].getColor(Position::left));
+    char l2 = RubikConstants::value(cubids[0][2][1].getColor(Position::left));
+    char l3 = RubikConstants::value(cubids[0][2][0].getColor(Position::left));
+    char l4 = RubikConstants::value(cubids[0][1][2].getColor(Position::left));
+    char l5 = RubikConstants::value(cubids[0][1][1].getColor(Position::left));
+    char l6 = RubikConstants::value(cubids[0][1][0].getColor(Position::left));
+    char l7 = RubikConstants::value(cubids[0][0][2].getColor(Position::left));
+    char l8 = RubikConstants::value(cubids[0][0][1].getColor(Position::left));
+    char l9 = RubikConstants::value(cubids[0][0][0].getColor(Position::left));
 
-    std::string d1 = toString(cubids[2][2][0].getColor(Position::down));
-    std::string d2 = toString(cubids[1][2][0].getColor(Position::down));
-    std::string d3 = toString(cubids[0][2][0].getColor(Position::down));
-    std::string d4 = toString(cubids[2][2][1].getColor(Position::down));
-    std::string d5 = toString(cubids[1][2][1].getColor(Position::down));
-    std::string d6 = toString(cubids[0][2][1].getColor(Position::down));
-    std::string d7 = toString(cubids[2][2][2].getColor(Position::down));
-    std::string d8 = toString(cubids[1][2][2].getColor(Position::down));
-    std::string d9 = toString(cubids[0][2][2].getColor(Position::down));
+    char d1 = RubikConstants::value(cubids[2][2][0].getColor(Position::down));
+    char d2 = RubikConstants::value(cubids[1][2][0].getColor(Position::down));
+    char d3 = RubikConstants::value(cubids[0][2][0].getColor(Position::down));
+    char d4 = RubikConstants::value(cubids[2][2][1].getColor(Position::down));
+    char d5 = RubikConstants::value(cubids[1][2][1].getColor(Position::down));
+    char d6 = RubikConstants::value(cubids[0][2][1].getColor(Position::down));
+    char d7 = RubikConstants::value(cubids[2][2][2].getColor(Position::down));
+    char d8 = RubikConstants::value(cubids[1][2][2].getColor(Position::down));
+    char d9 = RubikConstants::value(cubids[0][2][2].getColor(Position::down));
 
     for (int i=0; i<verticalPadding; ++i)
     {
@@ -66,79 +81,152 @@ pp::LeftView::LeftView(RubikCube& c, int verticalPadding)
     int fr = 6;
     int dr = 6;
     addLine(fmt::format("       _____________________"));
-    addLine(fmt::format("      /|{frt7}|{frt8}|{frt9}|", repeat(f7, fr), repeat(f8, fr), repeat(f9, fr)));
-    addLine(fmt::format("     /{}|{frt7}|{frt8}|{frt9}|", l9, repeat(f7, fr), repeat(f8, fr), repeat(f9, fr)));
+    addLine(fmt::format("      /|{}|{}|{}|", repeat(f7, fr), repeat(f8, fr), repeat(f9, fr)));
+    addLine(fmt::format("     /{}|{}|{}|{}|", l9, repeat(f7, fr), repeat(f8, fr), repeat(f9, fr)));
     addLine(fmt::format("    /|{}|______|______|______|", l9));
-    addLine(fmt::format("   /{}|/|{frt4}|{frt5}|{frt6}|", l8, repeat(f4, fr), repeat(f5, fr), repeat(f6, fr)));
-    addLine(fmt::format("  /|{}/{}|{frt4}|{frt5}|{frt6}|", l8, l6, repeat(f4, fr), repeat(f5, fr), repeat(f6, fr)));
+    addLine(fmt::format("   /{}|/|{}|{}|{}|", l8, repeat(f4, fr), repeat(f5, fr), repeat(f6, fr)));
+    addLine(fmt::format("  /|{}/{}|{}|{}|{}|", l8, l6, repeat(f4, fr), repeat(f5, fr), repeat(f6, fr)));
     addLine(fmt::format(" /{}|/|{}|______|______|______|", l7, l6));
-    addLine(fmt::format(" |{}/{}|/|{frt1}|{frt2}|{frt3}|", l7, l5, repeat(f1, fr), repeat(f2, fr), repeat(f3, fr)));
-    addLine(fmt::format(" |/|{}/{}|{frt1}|{frt2}|{frt3}|", l5, l3, repeat(f1, fr), repeat(f2, fr), repeat(f3, fr)));
+    addLine(fmt::format(" |{}/{}|/|{}|{}|{}|", l7, l5, repeat(f1, fr), repeat(f2, fr), repeat(f3, fr)));
+    addLine(fmt::format(" |/|{}/{}|{}|{}|{}|", l5, l3, repeat(f1, fr), repeat(f2, fr), repeat(f3, fr)));
     addLine(fmt::format(" |{}|/|{}|______|______|______|", l4, l3));
-    addLine(fmt::format(" |{}/{}|/{dwn3}/{dwn2}/{dwn1}/", l4, l2, repeat(d3, dr), repeat(d2, dr), repeat(d1, dr)));
+    addLine(fmt::format(" |{}/{}|/{}/{}/{}/", l4, l2, repeat(d3, dr), repeat(d2, dr), repeat(d1, dr)));
     addLine(fmt::format(" |/|{}/______/______/______/", l2));
-    addLine(fmt::format(" |{}|/{dwn6}/{dwn5}/{dwn4}/", l1, repeat(d6, dr), repeat(d5, dr), repeat(d4, dr)));
+    addLine(fmt::format(" |{}|/{}/{}/{}/", l1, repeat(d6, dr), repeat(d5, dr), repeat(d4, dr)));
     addLine(fmt::format(" |{}/------/------/------/", l1));
-    addLine(fmt::format(" |/{dwn9}/{dwn8}/{dwn7}/", repeat(d9, dr), repeat(d8, dr), repeat(d7, dr)));
+    addLine(fmt::format(" |/{}/{}/{}/", repeat(d9, dr), repeat(d8, dr), repeat(d7, dr)));
     addLine(fmt::format("  ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾"));
 }
 
 pp::MainView::MainView(RubikCube& c)
 {
     auto& cubids = c.getCubids();
-    std::string u1 = toString(cubids[0][0][0].getColor(Position::up));
-    std::string u2 = toString(cubids[1][0][0].getColor(Position::up));
-    std::string u3 = toString(cubids[2][0][0].getColor(Position::up));
-    std::string u4 = toString(cubids[0][0][1].getColor(Position::up));
-    std::string u5 = toString(cubids[1][0][1].getColor(Position::up));
-    std::string u6 = toString(cubids[2][0][1].getColor(Position::up));
-    std::string u7 = toString(cubids[0][0][2].getColor(Position::up));
-    std::string u8 = toString(cubids[1][0][2].getColor(Position::up));
-    std::string u9 = toString(cubids[2][0][2].getColor(Position::up));
+    char u1 = RubikConstants::value(cubids[0][0][0].getColor(Position::up));
+    char u2 = RubikConstants::value(cubids[1][0][0].getColor(Position::up));
+    char u3 = RubikConstants::value(cubids[2][0][0].getColor(Position::up));
+    char u4 = RubikConstants::value(cubids[0][0][1].getColor(Position::up));
+    char u5 = RubikConstants::value(cubids[1][0][1].getColor(Position::up));
+    char u6 = RubikConstants::value(cubids[2][0][1].getColor(Position::up));
+    char u7 = RubikConstants::value(cubids[0][0][2].getColor(Position::up));
+    char u8 = RubikConstants::value(cubids[1][0][2].getColor(Position::up));
+    char u9 = RubikConstants::value(cubids[2][0][2].getColor(Position::up));
 
-    std::string r1 = toString(cubids[2][2][0].getColor(Position::right));
-    std::string r2 = toString(cubids[2][2][1].getColor(Position::right));
-    std::string r3 = toString(cubids[2][2][2].getColor(Position::right));
-    std::string r4 = toString(cubids[2][1][0].getColor(Position::right));
-    std::string r5 = toString(cubids[2][1][1].getColor(Position::right));
-    std::string r6 = toString(cubids[2][1][2].getColor(Position::right));
-    std::string r7 = toString(cubids[2][0][0].getColor(Position::right));
-    std::string r8 = toString(cubids[2][0][1].getColor(Position::right));
-    std::string r9 = toString(cubids[2][0][2].getColor(Position::right));
+    char r1 = RubikConstants::value(cubids[2][2][0].getColor(Position::right));
+    char r2 = RubikConstants::value(cubids[2][2][1].getColor(Position::right));
+    char r3 = RubikConstants::value(cubids[2][2][2].getColor(Position::right));
+    char r4 = RubikConstants::value(cubids[2][1][0].getColor(Position::right));
+    char r5 = RubikConstants::value(cubids[2][1][1].getColor(Position::right));
+    char r6 = RubikConstants::value(cubids[2][1][2].getColor(Position::right));
+    char r7 = RubikConstants::value(cubids[2][0][0].getColor(Position::right));
+    char r8 = RubikConstants::value(cubids[2][0][1].getColor(Position::right));
+    char r9 = RubikConstants::value(cubids[2][0][2].getColor(Position::right));
 
-    std::string f1 = toString(cubids[0][2][0].getColor(Position::front));
-    std::string f2 = toString(cubids[1][2][0].getColor(Position::front));
-    std::string f3 = toString(cubids[2][2][0].getColor(Position::front));
-    std::string f4 = toString(cubids[0][1][0].getColor(Position::front));
-    std::string f5 = toString(cubids[1][1][0].getColor(Position::front));
-    std::string f6 = toString(cubids[2][1][0].getColor(Position::front));
-    std::string f7 = toString(cubids[0][0][0].getColor(Position::front));
-    std::string f8 = toString(cubids[1][0][0].getColor(Position::front));
-    std::string f9 = toString(cubids[2][0][0].getColor(Position::front));
+    char f1 = RubikConstants::value(cubids[0][2][0].getColor(Position::front));
+    char f2 = RubikConstants::value(cubids[1][2][0].getColor(Position::front));
+    char f3 = RubikConstants::value(cubids[2][2][0].getColor(Position::front));
+    char f4 = RubikConstants::value(cubids[0][1][0].getColor(Position::front));
+    char f5 = RubikConstants::value(cubids[1][1][0].getColor(Position::front));
+    char f6 = RubikConstants::value(cubids[2][1][0].getColor(Position::front));
+    char f7 = RubikConstants::value(cubids[0][0][0].getColor(Position::front));
+    char f8 = RubikConstants::value(cubids[1][0][0].getColor(Position::front));
+    char f9 = RubikConstants::value(cubids[2][0][0].getColor(Position::front));
 
     int fr = 6;
     int ur = 6;
     addLine(fmt::format("           _____________________"));
-    addLine(fmt::format("          /{upr7}/{upr8}/{upr9}/|", repeat(u7, ur), repeat(u8, ur), repeat(u8, ur)));
-    addLine(fmt::format("         /{upr7}/{upr8}/{upr9}/{}|", repeat(u8, ur), repeat(u8, ur), repeat(u8, ur), r9));
-    addLine(fmt::format("        /______/______/______/{9}|", repeat(r9, 2)));
-    addLine(fmt::format("       /{upr4}/{upr5}/{upr6}/|{9}|", repeat(u4, ur), repeat(u5, ur), repeat(u6, ur), repeat(r9, 2)));
-    addLine(fmt::format("      /{upr4}/{upr5}/{upr6}/{}|{}/|", repeat(u4, ur), repeat(u5, ur), repeat(u6, ur), r8, r9));
-    addLine(fmt::format("     /______/______/______/{8}|/{}|", repeat(r8, 2), r6));
-    addLine(fmt::format("    /{upr1}/{upr2}/{upr3}/|{8}|{6}|", repeat(u1, ur), repeat(u2, ur), repeat(u3, ur), repeat(r8, 2), repeat(r6, 2)));
-    addLine(fmt::format("   /{upr1}/{upr2}/{upr3}/{}|{}/|{}/|", repeat(u1, ur), repeat(u2, ur), repeat(u2, ur), r7, r8, r6));
-    addLine(fmt::format("  /______/______/______/{7}|/{}|/{}|", repeat(r7, 2), r5, r3));
-    addLine(fmt::format("  |{frt7}|{frt8}|{frt9}|{7}|{5}|{3}|", repeat(f7, fr), repeat(f8, fr), repeat(f9, fr), repeat(r7, 2), repeat(r5, 2), repeat(r3,2)));
-    addLine(fmt::format("  |{frt7}|{frt8}|{frt9}|{}/|{}/|{}/", repeat(f7, fr), repeat(f8, fr), repeat(f9, fr), r7, r5, r3));
+    addLine(fmt::format("          /{}/{}/{}/|", repeat(u7, ur), repeat(u8, ur), repeat(u9, ur)));
+    addLine(fmt::format("         /{}/{}/{}/{}|", repeat(u7, ur), repeat(u8, ur), repeat(u9, ur), r9));
+    addLine(fmt::format("        /______/______/______/{}|", repeat(r9, 2)));
+    addLine(fmt::format("       /{}/{}/{}/|{}|", repeat(u4, ur), repeat(u5, ur), repeat(u6, ur), repeat(r9, 2)));
+    addLine(fmt::format("      /{}/{}/{}/{}|{}/|", repeat(u4, ur), repeat(u5, ur), repeat(u6, ur), r8, r9));
+    addLine(fmt::format("     /______/______/______/{}|/{}|", repeat(r8, 2), r6));
+    addLine(fmt::format("    /{}/{}/{}/|{}|{}|", repeat(u1, ur), repeat(u2, ur), repeat(u3, ur), repeat(r8, 2), repeat(r6, 2)));
+    addLine(fmt::format("   /{}/{}/{}/{}|{}/|{}/|", repeat(u1, ur), repeat(u2, ur), repeat(u3, ur), r7, r8, r6));
+    addLine(fmt::format("  /______/______/______/{}|/{}|/{}|", repeat(r7, 2), r5, r3));
+    addLine(fmt::format("  |{}|{}|{}|{}|{}|{}|", repeat(f7, fr), repeat(f8, fr), repeat(f9, fr), repeat(r7, 2), repeat(r5, 2), repeat(r3,2)));
+    addLine(fmt::format("  |{}|{}|{}|{}/|{}/|{}/", repeat(f7, fr), repeat(f8, fr), repeat(f9, fr), r7, r5, r3));
     addLine(fmt::format("  |______|______|______|/{}|/{}|/", r4, r2));
-    addLine(fmt::format("  |{frt4}|{frt5}|{frt6}|{4}|{2}|", repeat(f4, fr), repeat(f5, fr), repeat(f6, fr), repeat(r4, 2), repeat(r2, 2)));
-    addLine(fmt::format("  |{frt4}|{frt5}|{frt6}|{}/|{}/", repeat(f4, fr), repeat(f5, fr), repeat(f6, fr), r4, r2));
+    addLine(fmt::format("  |{}|{}|{}|{}|{}|", repeat(f4, fr), repeat(f5, fr), repeat(f6, fr), repeat(r4, 2), repeat(r2, 2)));
+    addLine(fmt::format("  |{}|{}|{}|{}/|{}/", repeat(f4, fr), repeat(f5, fr), repeat(f6, fr), r4, r2));
     addLine(fmt::format("  |______|______|______|/{}|/", r1));
-    addLine(fmt::format("  |{frt1}|{frt2}|{frt3}|{1}|", repeat(f1, fr), repeat(f2, fr), repeat(f3, fr), repeat(r1, 2)));
-    addLine(fmt::format("  |{frt1}|{frt2}|{frt3}|{}/", repeat(f1, fr), repeat(f2, fr), repeat(f3, fr), r1));
+    addLine(fmt::format("  |{}|{}|{}|{}|", repeat(f1, fr), repeat(f2, fr), repeat(f3, fr), repeat(r1, 2)));
+    addLine(fmt::format("  |{}|{}|{}|{}/", repeat(f1, fr), repeat(f2, fr), repeat(f3, fr), r1));
     addLine(fmt::format("  |______|______|______|/"));
 }
 
+static std::string
+colorize(const Color c, const std::string& str)
+{
+    std::string retVal;
+    switch (c)
+    {
+        case Color::blue:
+            retVal = "\e[38;5;27m";
+            break;
+        case Color::green:
+            retVal = "\e[38;5;118m";
+            break;
+        case Color::orange:
+            retVal = "\e[38;5;208m";
+            break;
+        case Color::red:
+            retVal = "\e[38;5;196m";
+            break;
+        case Color::yellow:
+            retVal = "\e[38;5;226m";
+            break;
+        case Color::white:
+            retVal = "\e[1m";
+            break;
+        case Color::none:
+            retVal = "\e[38;5;165m";
+            break;
+        default:
+            break;
+    }
+    return retVal + str + "\e[0m";
+}
+
+static std::string
+replaceCubeColors(const std::string& str)
+{
+    std::string colorized;
+
+    std::stack<std::pair<std::regex, std::string>> regexStack;
+    const std::string fullMatch = "$&";
+    regexStack.push({std::regex(std::string(1,value(Color::red))+"+"), colorize(Color::red, fullMatch)});
+    regexStack.push({std::regex(std::string(1,value(Color::blue))+"+"), colorize(Color::blue, fullMatch)});
+    regexStack.push({std::regex(std::string(1,value(Color::yellow))+"+"), colorize(Color::yellow, fullMatch)});
+    regexStack.push({std::regex(std::string(1,value(Color::green))+"+"), colorize(Color::green, fullMatch)});
+    regexStack.push({std::regex(std::string(1,value(Color::orange))+"+"), colorize(Color::orange, fullMatch)});
+    regexStack.push({std::regex(std::string(1,value(Color::white))+"+"), colorize(Color::white, fullMatch)});
+
+    while (!regexStack.empty())
+    {
+        auto pair = regexStack.top();
+        regexStack.pop();
+        const std::string& previous = colorized.empty() ? str : colorized;
+        colorized = std::regex_replace(previous, pair.first, pair.second);
+    }
+
+    return colorized;
+}
+
+void
+pp::printRubikCube(RubikCube& c)
+{
+    int gapSize = 4;
+    std::stringstream stream;
+    LeftView lv(c);
+    MainView mv(c);
+    for (int i=0; i<std::max(lv.verticalSize(), mv.verticalSize()); ++i)
+    {
+        stream << lv.line(i) << repeat(" ", lv.horizontalSize() - lv.line(i).size() + gapSize) << mv.line(i) << "\n";
+    }
+    std::cout << replaceCubeColors(stream.str()) << std::flush;
+}
+
+/* legacy print
 void pp::printRubikCube(RubikCube& c)
 {
     auto& cubids = c.getCubids();
@@ -248,3 +336,4 @@ void pp::printRubikCube(RubikCube& c)
             << " |__|__|__|/     \n";
     }
 }
+*/

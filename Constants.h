@@ -38,8 +38,6 @@ int value(const Position p);
 
 char value(const Color c);
 
-std::string toString(const Color c);
-
 using Axis = std::array<Position, 4>;
 static constexpr Axis s_XY_axis{Position::left,
     Position::down,
