@@ -14,15 +14,16 @@ class PrintView
         PrintView() = default;
 
         int verticalSize() const { return m_lines.size(); }
-
     protected:
+        void addLine(std::string&& line);
         std::vector<std::string> m_lines;
+        int m_horizontalSize{0};
 };
 
 class LeftView : PrintView
 {
     public:
-        LeftView(RubikCube& c);
+        LeftView(RubikCube& c, int verticalPadding = 5);
 };
 
 class MainView : PrintView

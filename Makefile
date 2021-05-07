@@ -2,7 +2,7 @@ CXX=g++
 CXXFLAGS=-c -O2
 
 all: main.o Rubik.o Constants.o Algorithm.o PrettyPrint.o
-	$(CXX) main.o Rubik.o Constants.o Algorithm.o PrettyPrint.o -o r
+	$(CXX) main.o Rubik.o Constants.o Algorithm.o PrettyPrint.o -lfmt -o r
 
 main.o: main.cpp Rubik.h Constants.h Algorithm.h PrettyPrint.h
 	$(CXX) $(CXXFLAGS) main.cpp
@@ -17,7 +17,7 @@ Constants.o: Constants.cpp Constants.h
 	$(CXX) $(CXXFLAGS) Constants.cpp
 
 PrettyPrint.o: PrettyPrint.cpp PrettyPrint.h
-	$(CXX) $(CXXFLAGS) PrettyPrint.cpp
+	$(CXX) $(CXXFLAGS) PrettyPrint.cpp -lfmt
 
 clean:
 	rm -f *.o r
