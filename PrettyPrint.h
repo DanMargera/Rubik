@@ -30,14 +30,17 @@ class PrintView
 class TerminalPrinter
 {
     public:
-        TerminalPrinter() = default;
-        TerminalPrinter(bool colorize, int gapSize) : m_colorize(colorize), m_gapSize(gapSize) { }
-        void print(std::list<const PrintView*> views);
+        TerminalPrinter(std::ostream& ostr, std::list<const PrintView*>&& views) : m_outStream(ostr), m_views(std::move(views)) { }
+        void print();
     private:
+        void print(const std::list<const PrintView*>& views);
         std::string colorize(RubikConstants::Color c, const std::string& viewStr);
         std::string getColorizedViewString(const std::string& viewStr);
+
         int m_gapSize{4};
         bool m_colorize{true};
+        std::ostream& m_outStream;
+        std::list<const PrintView*> m_views;
 };
 
 void printRubikCube(RubikCube& c);

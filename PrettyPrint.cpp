@@ -7,6 +7,8 @@
 #include <regex>
 #include <sstream>
 #include <stack>
+#include <sys/ioctl.h>
+#include <unistd.h>
 
 static std::string
 repeat(const std::string& s, int times)
@@ -249,8 +251,13 @@ pp::TerminalPrinter::getColorizedViewString(const std::string& viewStr)
 }
 
 void
-pp::TerminalPrinter::print(std::list<const PrintView*> viewList)
+pp::TerminalPrinter::print(const std::list<const PrintView*>& viewList)
 {
+    if (viewList.empty())
+    {
+        return;
+    }
+
     std::stringstream stream;
     auto gapSize = [&] (const PrintView& view, int lineNum)
     {
@@ -272,17 +279,41 @@ pp::TerminalPrinter::print(std::list<const PrintView*> viewList)
         }
         stream << "\n";
     }
-    std::cout << stream.str() << std::flush;
+    m_outStream << stream.str() << std::flush;
+}
+
+void
+pp::TerminalPrinter::print()
+{
+    winsize size;
+    ioctl(STDOUT_FILENO, TIOCGWINSZ, &size);
+    int terminalHzSize = size.ws_col;
+    std::list<const PrintView*> all = m_views;
+    while (!all.empty())
+    {
+        std::list<const PrintView*> row;
+        int currentSize = 0;
+        while (!all.empty() && currentSize < terminalHzSize)
+        {
+            if (currentSize + all.front()->horizontalSize() < terminalHzSize)
+            {
+                row.emplace_back(all.front());
+                all.pop_front();
+            }
+            currentSize += row.back()->horizontalSize();
+        }
+        print(row);
+    }
 }
 
 void
 pp::printRubikCube(RubikCube& c)
 {
-    TerminalPrinter tp;
     LeftView lv(c);
     MainView mv(c);
     CmdHelpView cmds;
-    tp.print({&lv, &mv, &cmds});
+    TerminalPrinter tp(std::cout, {&lv, &mv, &cmds});
+    tp.print();
 }
 
 /*
