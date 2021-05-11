@@ -170,9 +170,13 @@ class MainView : public pp::PrintView
 class CmdHelpView : public pp::PrintView
 {
     public:
-        CmdHelpView()
+        CmdHelpView(int verticalPadding = 0)
         {
             m_colorized = false;
+            for (int i=0; i<verticalPadding; ++i)
+            {
+                addLine("");
+            }
             addLine("Rotation Commands:");
             addLine("");
             addLine("[R] [-R] [L] [-L]");
@@ -309,7 +313,7 @@ pp::TerminalPrinter::print()
 void
 pp::printRubikCube(RubikCube& c)
 {
-    LeftView lv(c);
+    LeftView lv(c, 4);
     MainView mv(c);
     CmdHelpView cmds;
     TerminalPrinter tp(std::cout, {&lv, &mv, &cmds});
