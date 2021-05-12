@@ -30,3 +30,6 @@ r
 
 # Vscode settings
 .vscode
+
+# CMake build
+build/
